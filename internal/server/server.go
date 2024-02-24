@@ -41,5 +41,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	router.GET("/", handlers.HelloHandler)
 
+	api := router.Group("/api")
+
+	apiV1 := api.Group("/v1")
+
+	auth := apiV1.Group("/auth")
+	{
+		auth.POST("/login", handlers.AuthHandler)
+	}
+
 	return router
 }
