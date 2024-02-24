@@ -24,3 +24,5 @@ tmp/
 
 # .env file
 .env
+
+main
