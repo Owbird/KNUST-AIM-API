@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Owbird/KNUST-AIM-Desktop-API/internal/handlers"
+	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
 )
 
@@ -30,4 +32,14 @@ func NewServer() *http.Server {
 	}
 
 	return server
+}
+
+func (s *Server) RegisterRoutes() http.Handler {
+	router := gin.Default()
+
+	handlers := handlers.NewHandlers()
+
+	router.GET("/", handlers.HelloHandler)
+
+	return router
 }

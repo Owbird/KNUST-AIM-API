@@ -5,14 +5,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Owbird/KNUST-AIM-Desktop-API/internal/server"
+	"github.com/Owbird/KNUST-AIM-Desktop-API/internal/handlers"
 	"github.com/gin-gonic/gin"
 )
 
 func TestHelloWorldHandler(t *testing.T) {
-	s := &server.Server{}
+	h := handlers.NewHandlers()
 	r := gin.New()
-	r.GET("/", s.HelloWorldHandler)
+	r.GET("/", h.HelloHandler)
 	// Create a test HTTP request
 	req, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
