@@ -22,6 +22,11 @@ clean:
 	@echo "Cleaning..."
 	@rm -f main
 
+# Create docs
+docs:
+	@echo "Creating docs..."
+	@swag init -g cmd/api/main.go
+
 # Live Reload
 watch:
 	@if command -v air > /dev/null; then \
@@ -39,4 +44,4 @@ watch:
 	    fi; \
 	fi
 
-.PHONY: all build run test clean
+.PHONY: all build run test clean docs
