@@ -7,9 +7,12 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Owbird/KNUST-AIM-Desktop-API/docs"
 	"github.com/Owbird/KNUST-AIM-Desktop-API/internal/handlers"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -17,6 +20,11 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
+	docs.SwaggerInfo.Title = "KNUST AIM API"
+	docs.SwaggerInfo.Description = "An unofficial API for KNUST AIM Desktop"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	NewServer := &Server{
 		port: port,
@@ -40,6 +48,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	handlers := handlers.NewHandlers()
 
 	router.GET("/", handlers.HelloHandler)
+
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	api := router.Group("/api")
 	{
