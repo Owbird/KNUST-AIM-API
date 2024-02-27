@@ -39,3 +39,7 @@ Contributions are welcome! If you have any suggestions, feature requests, or bug
 ## Disclaimer
 
 This project is not affiliated with or endorsed by the Kwame Nkrumah University of Science and Technology (KNUST) University Information Technology Service (UITS). It is an independent initiative created by developers for educational and research purposes.
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
