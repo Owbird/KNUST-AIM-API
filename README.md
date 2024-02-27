@@ -1,49 +1,41 @@
-# Project bleh
+# KNUST AIM API
 
-One Paragraph of project description goes here
+The KNUST AIM API provides access to various features available on the [Academic Information Manager (AIM)](https://aim.knust.edu.gh/) app developed for Kwame Nkrumah University of Science and Technology (KNUST) by the University Information Technology Services (UITS).
 
-## Getting Started
+## Features
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+- [x] User Authentication
 
-## MakeFile
+## Installation
 
-run all make commands with clean tests
-```bash
-make all build
-```
+1. Clone this repository to your local machine:
 
-build the application
-```bash
-make build
-```
+   ```bash
+   git clone https://github.com/Owbird/KNUST-AIM-API.git
+   ```
 
-run the application
-```bash
-make run
-```
+2. Navigate to the project directory:
 
-Create DB container
-```bash
-make docker-run
-```
+   ```bash
+   cd KNUST-AIM-API
+   ```
 
-Shutdown DB container
-```bash
-make docker-down
-```
+3. Install dependencies:
 
-live reload the application
-```bash
-make watch
-```
+   ```bash
+   go mod tidy
+   ```
 
-run the test suite
-```bash
-make test
-```
+4. Run the project:
 
-clean up binary from the last build
-```bash
-make clean
-```
+   ```bash
+   make run
+   ```
+
+## Contributing
+
+Contributions are welcome! If you have any suggestions, feature requests, or bug reports, please create an issue or submit a pull request.
+
+## Disclaimer
+
+This project is not affiliated with or endorsed by the Kwame Nkrumah University of Science and Technology (KNUST) University Information Technology Service (UITS). It is an independent initiative created by developers for educational and research purposes.
