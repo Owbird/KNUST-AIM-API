@@ -59,6 +59,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 			{
 				auth.POST("/login", handlers.AuthHandler)
 			}
+
+			news := apiV1.Group("/news")
+			{
+				news.GET("/", handlers.GetNewsHandler)
+			}
 		}
 	}
 
