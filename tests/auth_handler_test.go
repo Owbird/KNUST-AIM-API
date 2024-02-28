@@ -15,13 +15,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type testCase struct {
-	name        string
-	expectedMsg string
-	expected    int
-	payload     models.UserAuthPayload
-}
-
 func TestAuthHandler(t *testing.T) {
 	godotenv.Load("../.env")
 
@@ -30,7 +23,12 @@ func TestAuthHandler(t *testing.T) {
 
 	router.POST("/auth", handlers.AuthHandler)
 
-	testCases := []testCase{
+	testCases := []struct {
+		name        string
+		expectedMsg string
+		expected    int
+		payload     models.UserAuthPayload
+	}{
 		{
 			name:        "Valid credentials",
 			expected:    http.StatusOK,
