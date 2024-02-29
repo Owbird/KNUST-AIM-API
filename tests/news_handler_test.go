@@ -10,7 +10,7 @@ import (
 	"github.com/Owbird/KNUST-AIM-Desktop-API/internal/handlers"
 	"github.com/Owbird/KNUST-AIM-Desktop-API/models"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/assert/v2"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewsHandler(t *testing.T) {
