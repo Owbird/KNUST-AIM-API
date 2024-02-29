@@ -13,6 +13,6 @@ type UserCookies struct {
 }
 
 type UserResponse struct {
-	Message string      `json:"message"`
-	Cookies UserCookies `json:"cookies"`
+	Message string `json:"message"`
+	Token   string `json:"token"`
 }

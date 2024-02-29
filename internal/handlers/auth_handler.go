@@ -3,12 +3,15 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func (h *Handlers) AuthHandler(c *gin.Context) {
@@ -83,10 +86,27 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 			}
 		}
 
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256,
+			jwt.MapClaims{
+				"token": userCookies,
+				"exp":   time.Now().Add(time.Hour * 24).Unix(),
+			})
+
+		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+				Message: "Couldn't authorize user. Please try again",
+			})
+
+			return
+		}
+
 		c.JSON(http.StatusOK, models.UserResponse{
 			Message: "User authorized successfully",
-			Cookies: userCookies,
+			Token:   tokenString,
 		})
+
 		return
 	}
 
