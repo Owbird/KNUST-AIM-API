@@ -8,8 +8,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Owbird/KNUST-AIM-Desktop-API/internal/handlers"
-	"github.com/Owbird/KNUST-AIM-Desktop-API/models"
+	"github.com/Owbird/KNUST-AIM-API/internal/handlers"
+	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Owbird/KNUST-AIM-Desktop-API/config"
-	"github.com/Owbird/KNUST-AIM-Desktop-API/models"
+	"github.com/Owbird/KNUST-AIM-API/config"
+	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/anaskhan96/soup"
 	"github.com/gin-gonic/gin"
 )

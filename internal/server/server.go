@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Owbird/KNUST-AIM-Desktop-API/docs"
-	"github.com/Owbird/KNUST-AIM-Desktop-API/internal/handlers"
+	"github.com/Owbird/KNUST-AIM-API/docs"
+	"github.com/Owbird/KNUST-AIM-API/internal/handlers"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
 	swaggerfiles "github.com/swaggo/files"

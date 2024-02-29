@@ -1,4 +1,4 @@
-module github.com/Owbird/KNUST-AIM-Desktop-API
+module github.com/Owbird/KNUST-AIM-API
 
 go 1.22.0
 

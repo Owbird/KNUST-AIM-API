@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/Owbird/KNUST-AIM-Desktop-API/internal/server"
+	"github.com/Owbird/KNUST-AIM-API/internal/server"
 )
 
 func main() {
