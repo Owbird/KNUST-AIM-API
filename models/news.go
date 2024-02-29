@@ -12,3 +12,21 @@ type NewsResponse struct {
 	Message string `json:"message"`
 	News    []News `json:"news"`
 }
+
+type NewsDetailsContent struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
+
+type NewsDetails struct {
+	Title         string               `json:"tile"`
+	FeaturedImage string               `json:"featured_image"`
+	Date          string               `json:"date"`
+	Source        string               `json:"source"`
+	Content       []NewsDetailsContent `json:"content"`
+}
+
+type NewsDetailsResponse struct {
+	Message string      `json:"message"`
+	News    NewsDetails `json:"news"`
+}

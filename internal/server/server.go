@@ -65,6 +65,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 			news := apiV1.Group("/news")
 			{
 				news.GET("/", handlers.GetNewsHandler)
+				news.GET("/:slug", handlers.GetNewsDetailsHandler)
 			}
 		}
 	}

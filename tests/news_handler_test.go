@@ -51,3 +51,46 @@ func TestNewsHandler(t *testing.T) {
 
 	}
 }
+
+func TestNewsDetailsHandler(t *testing.T) {
+
+	router := gin.Default()
+	handlers := handlers.NewHandlers()
+
+	router.GET("/news/:slug", handlers.GetNewsDetailsHandler)
+
+	req, err := http.NewRequest(http.MethodGet, "/news/knust-set-represent-ghana-jessup-international-law-moot-court-competition-usa", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	res := httptest.NewRecorder()
+
+	router.ServeHTTP(res, req)
+
+	assert.Equal(t, http.StatusOK, res.Code)
+
+	var response models.NewsDetailsResponse
+
+	json.NewDecoder(res.Body).Decode(&response)
+
+	assert.Equal(t, "Fetched news successfully", response.Message)
+
+	assert.NotEqual(t, response.News.Title, "")
+	assert.NotEqual(t, response.News.Date, "")
+	assert.NotEqual(t, response.News.Source, "")
+	assert.NotEqual(t, response.News.FeaturedImage, "")
+
+	assert.NotEqual(t, len(response.News.Content), 0)
+
+	for index, content := range response.News.Content {
+		t.Run(fmt.Sprintf("Non Empty field for #%v", index), func(t *testing.T) {
+			assert.NotEqual(t, content.Type, "")
+			assert.NotEqual(t, content.Value, "")
+		})
+	}
+
+}
