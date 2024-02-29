@@ -4,7 +4,12 @@ The KNUST AIM API provides access to various features available on the [Academic
 
 ## Features
 
-- [x] User Authentication
+- [x] Authentication
+- [x] App News
+- [] Profile Data
+- [] Results
+- [] Fee Bill
+- [] Course Registration Slip
 
 ## Installation
 
