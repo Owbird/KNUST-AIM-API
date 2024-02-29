@@ -55,6 +55,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	{
 		apiV1 := api.Group("/v1")
 		{
+			apiV1.GET("/knust-server-status", handlers.KNUSTServerStatusHandler)
+
 			auth := apiV1.Group("/auth")
 			{
 				auth.POST("/login", handlers.AuthHandler)
