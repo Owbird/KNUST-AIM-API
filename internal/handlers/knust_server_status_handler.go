@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/Owbird/KNUST-AIM-Desktop-API/config"
 	"github.com/Owbird/KNUST-AIM-Desktop-API/models"
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +16,7 @@ func (h *Handlers) KNUSTServerStatusHandler(c *gin.Context) {
 
 	wg := sync.WaitGroup{}
 
-	urls := []string{"https://www.knust.edu.gh", "https://apps.knust.edu.gh"}
+	urls := []string{config.MainUrl, config.AppsUrl}
 
 	badge := "Up-green"
 
