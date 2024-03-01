@@ -9,6 +9,7 @@ import (
 
 	"github.com/Owbird/KNUST-AIM-API/docs"
 	"github.com/Owbird/KNUST-AIM-API/internal/handlers"
+	"github.com/Owbird/KNUST-AIM-API/internal/middlewares"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
 	swaggerfiles "github.com/swaggo/files"
@@ -70,6 +71,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 			{
 				news.GET("/", handlers.GetNewsHandler)
 				news.GET("/:slug", handlers.GetNewsDetailsHandler)
+			}
+
+			user := apiV1.Group("/user")
+			{
+				user.Use(middlewares.AuthMiddleware)
+				user.GET("/", handlers.GetUserData)
 			}
 		}
 	}
