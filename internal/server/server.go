@@ -55,7 +55,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 	{
 		apiV1 := api.Group("/v1")
 		{
-			apiV1.GET("/knust-server-status", handlers.KNUSTServerStatusHandler)
+			techServers := apiV1.Group("/knust-server-status")
+			{
+				techServers.GET("/", handlers.KNUSTServerStatusHandler)
+				techServers.GET("/badge", handlers.KNUSTServerStatusBadgeHandler)
+			}
 
 			auth := apiV1.Group("/auth")
 			{

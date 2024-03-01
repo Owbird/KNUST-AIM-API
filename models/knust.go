@@ -7,6 +7,5 @@ type KNUSTServer struct {
 
 type KNUSTServerStatusResponse struct {
 	Message string        `json:"message"`
-	Badge   string        `json:"badge"`
 	Servers []KNUSTServer `json:"servers"`
 }
