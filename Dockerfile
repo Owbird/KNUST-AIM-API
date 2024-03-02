@@ -1,9 +1,5 @@
+FROM golang:latest AS builder
 
-FROM golang:alpine AS builder
-
-RUN apk update && apk add --no-cache 'git=~2'
-
-ENV GO111MODULE=on
 WORKDIR /app
 COPY . .
 
@@ -11,10 +7,15 @@ RUN go mod download
 
 RUN go build -o main cmd/api/main.go
 
-FROM alpine:3
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install -y wget
+
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt install -y ./google-chrome-stable_current_amd64.deb && \
+    rm google-chrome-stable_current_amd64.deb
 
 WORKDIR /
-
 
 COPY --from=builder /app/main .
 
