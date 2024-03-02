@@ -11,6 +11,10 @@ The KNUST AIM API provides access to various features available on the [Academic
 - [] Fee Bill
 - [] Course Registration Slip
 
+## Documention
+
+API Documentation can be found [here](https://knust-aim-api.fly.dev/docs/index.html)
+
 ## Installation
 
 1. Clone this repository to your local machine:
