@@ -2,6 +2,9 @@
 
 The KNUST AIM API provides access to various features available on the [Academic Information Manager (AIM)](https://aim.knust.edu.gh/) app developed for Kwame Nkrumah University of Science and Technology (KNUST) by the University Information Technology Services (UITS).
 
+![Tests](https://github.com/Owbird/KNUST-AIM-API/actions/workflows/go.yml/badge.svg)
+![KNUST Servers](https://knust-aim-api.fly.dev/api/v1/knust-server-status/badge)
+
 ## Features
 
 - [x] Authentication
