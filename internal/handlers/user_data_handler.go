@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -123,4 +124,41 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 		UserData: userData,
 	})
 
+}
+
+func (h *Handlers) GetUserImage(c *gin.Context) {
+
+	id, ok := c.Params.Get("id")
+
+	if !ok {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Message: "Invalid user id",
+		})
+
+		return
+	}
+
+	url := fmt.Sprintf("%s?id=%s", config.UserImageUrl, id)
+
+	resp, err := http.Get(url)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't fetch user image",
+		})
+
+		return
+	}
+
+	body, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't fetch user image",
+		})
+
+		return
+	}
+
+	c.Data(http.StatusOK, "image/jpg", body)
 }

@@ -2,6 +2,7 @@ package tests
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -67,5 +68,38 @@ func TestUserDataHandler(t *testing.T) {
 	assert.NotEqual(t, response.UserData.Contact.AltPersonalMobile, "")
 	assert.NotEqual(t, response.UserData.Contact.PostalAddress, "")
 	assert.NotEqual(t, response.UserData.Contact.ResidentialAddress, "")
+
+}
+
+func TestGetUserImageHandler(t *testing.T) {
+
+	router := gin.Default()
+	handlers := handlers.NewHandlers()
+
+	router.GET("/image/:id", handlers.GetUserImage)
+
+	req, err := http.NewRequest(http.MethodGet, "/image/20812892", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	res := httptest.NewRecorder()
+
+	router.ServeHTTP(res, req)
+
+	assert.Equal(t, http.StatusOK, res.Code)
+
+	assert.Equal(t, res.Header().Get("Content-Type"), "image/jpg")
+
+	content, err := io.ReadAll(res.Body)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.NotEqual(t, len(content), 0)
 
 }
