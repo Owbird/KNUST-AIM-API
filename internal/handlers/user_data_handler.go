@@ -14,6 +14,14 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
+// @Summary Get User Data
+// @Description Returns personal, programme and contact user data
+// @Tags User
+// @Produce json
+// @Success 200 {object} models.UserDataResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Router /user [get]
 func (h *Handlers) GetUserData(c *gin.Context) {
 	cookies, _ := c.Get("userCookies")
 
@@ -126,6 +134,17 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 
 }
 
+
+// @Summary User image
+// @Description Serves up the user image based on the student id
+// @Tags User
+// @Produce json
+// @Param  studentId path string true "Student ID"
+// @Success 200 {string} string "OK"
+// @Failure 500 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /user/image/{studentId} [get]
 func (h *Handlers) GetUserImage(c *gin.Context) {
 
 	id, ok := c.Params.Get("id")

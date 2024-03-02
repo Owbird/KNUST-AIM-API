@@ -1,4 +1,315 @@
+definitions:
+  models.ContactUserData:
+    properties:
+      alt_personal_mobile:
+        type: string
+      knust_mobile:
+        type: string
+      personal_email:
+        type: string
+      personal_mobile:
+        type: string
+      postal_address:
+        type: string
+      residential_address:
+        type: string
+      school_email:
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  models.KNUSTServer:
+    properties:
+      status:
+        type: string
+      url:
+        type: string
+    type: object
+  models.KNUSTServerStatusResponse:
+    properties:
+      message:
+        type: string
+      servers:
+        items:
+          $ref: '#/definitions/models.KNUSTServer'
+        type: array
+    type: object
+  models.News:
+    properties:
+      category:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+      slug:
+        type: string
+      title:
+        type: string
+    type: object
+  models.NewsDetails:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/models.NewsDetailsContent'
+        type: array
+      date:
+        type: string
+      featured_image:
+        type: string
+      source:
+        type: string
+      tile:
+        type: string
+    type: object
+  models.NewsDetailsContent:
+    properties:
+      type:
+        type: string
+      value:
+        type: string
+    type: object
+  models.NewsDetailsResponse:
+    properties:
+      message:
+        type: string
+      news:
+        $ref: '#/definitions/models.NewsDetails'
+    type: object
+  models.NewsResponse:
+    properties:
+      message:
+        type: string
+      news:
+        items:
+          $ref: '#/definitions/models.News'
+        type: array
+    type: object
+  models.PersonalUserData:
+    properties:
+      country:
+        type: string
+      date_of_birth:
+        type: string
+      gender:
+        type: string
+      other_names:
+        type: string
+      region:
+        type: string
+      religion:
+        type: string
+      surname:
+        type: string
+      username:
+        type: string
+    type: object
+  models.ProgrammeUserData:
+    properties:
+      indexNo:
+        type: string
+      programme_stream:
+        type: string
+      studentId:
+        type: string
+    type: object
+  models.UserData:
+    properties:
+      contact:
+        $ref: '#/definitions/models.ContactUserData'
+      personal:
+        $ref: '#/definitions/models.PersonalUserData'
+      programme:
+        $ref: '#/definitions/models.ProgrammeUserData'
+    type: object
+  models.UserDataResponse:
+    properties:
+      message:
+        type: string
+      user_data:
+        $ref: '#/definitions/models.UserData'
+    type: object
+  models.UserResponse:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates the user the based on the credentials and returns
+        a token which will be used to authorize requests
+      parameters:
+      - description: Username
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: Student ID
+        in: body
+        name: studentId
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Authenticate a user
+      tags:
+      - Auth
+  /knust-server-status:
+    get:
+      description: This checks which of the used KNUST servers are up or down
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.KNUSTServerStatusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get the status of KNUST servers
+      tags:
+      - KNUST Servers
+  /knust-server-status/badge:
+    get:
+      description: This sums up the status of the servers and returns an SVG badge
+        as a summary from shields.io
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get the status of KNUST servers as a badge
+      tags:
+      - KNUST Servers
+  /news:
+    get:
+      description: Returns the latest news available
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.NewsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get latest news
+      tags:
+      - News
+  /news/{slug}:
+    get:
+      consumes:
+      - application/json
+      description: Get the post details of the news based on the slug
+      parameters:
+      - description: News slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.NewsDetailsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get news post details
+      tags:
+      - News
+  /user:
+    get:
+      description: Returns personal, programme and contact user data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserDataResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get User Data
+      tags:
+      - User
+  /user/image/{studentId}:
+    get:
+      description: Serves up the user image based on the student id
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: User image
+      tags:
+      - User
 swagger: "2.0"

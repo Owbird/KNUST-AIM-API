@@ -22,7 +22,8 @@ type Server struct {
 
 func NewServer() *http.Server {
 	docs.SwaggerInfo.Title = "KNUST AIM API"
-	docs.SwaggerInfo.Description = "An unofficial API for KNUST AIM Desktop"
+	docs.SwaggerInfo.Description = "An unofficial API for KNUST AIM"
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 

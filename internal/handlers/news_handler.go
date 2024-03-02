@@ -11,6 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Get latest news
+// @Description Returns the latest news available
+// @Tags News
+// @Produce json
+// @Success 200 {object} models.NewsResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /news [get]
 func (h *Handlers) GetNewsHandler(c *gin.Context) {
 	soup.Header("User-Agent", config.UserAgent)
 
@@ -58,6 +65,16 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 
 }
 
+
+// @Summary Get news post details
+// @Description Get the post details of the news based on the slug
+// @Tags News
+// @Produce json
+// @Accept  json
+// @Param slug path string true "News slug"
+// @Success 200 {object} models.NewsDetailsResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /news/{slug} [get]
 func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 	soup.Header("User-Agent", config.UserAgent)
 

@@ -12,6 +12,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Get the status of KNUST servers
+// @Description This checks which of the used KNUST servers are up or down
+// @Tags KNUST Servers
+// @Produce json
+// @Success 200 {object} models.KNUSTServerStatusResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /knust-server-status [get]
 func (h *Handlers) KNUSTServerStatusHandler(c *gin.Context) {
 
 	servers := []models.KNUSTServer{}
@@ -64,6 +71,12 @@ func (h *Handlers) KNUSTServerStatusHandler(c *gin.Context) {
 
 }
 
+// @Summary Get the status of KNUST servers as a badge
+// @Description This sums up the status of the servers and returns an SVG badge as a summary from shields.io
+// @Tags KNUST Servers
+// @Success 200 {string} string "OK"
+// @Failure 500 {object} models.ErrorResponse
+// @Router /knust-server-status/badge [get]
 func (h *Handlers) KNUSTServerStatusBadgeHandler(c *gin.Context) {
 
 	host := config.HostUrlProd

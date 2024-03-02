@@ -14,6 +14,18 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// @Summary Authenticate a user
+// @Description Authenticates the user the based on the credentials and returns a token which will be used to authorize requests
+// @Tags Auth
+// @Produce json
+// @Accept  json
+// @Param  username body string true "Username"
+// @Param  password body string true "Password"
+// @Param  studentId body string true "Student ID"
+// @Success 200 {object} models.UserResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Router /auth/login [post]
 func (h *Handlers) AuthHandler(c *gin.Context) {
 
 	var authPayload models.UserAuthPayload
