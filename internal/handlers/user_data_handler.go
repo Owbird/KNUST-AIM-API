@@ -11,6 +11,7 @@ import (
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 )
 
@@ -27,7 +28,9 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 
 	parsedCookies := cookies.(models.UserCookies)
 
-	var browser = rod.New().MustConnect().WithPanic(func(i interface{}) {
+	controlUrl := launcher.New().NoSandbox(true).MustLaunch()
+
+	var browser = rod.New().ControlURL(controlUrl).MustConnect().WithPanic(func(i interface{}) {
 		log.Println("[!] Headerless browser proberly lost context.")
 	})
 
@@ -133,7 +136,6 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 	})
 
 }
-
 
 // @Summary User image
 // @Description Serves up the user image based on the student id
