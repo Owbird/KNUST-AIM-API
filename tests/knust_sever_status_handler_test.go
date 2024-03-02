@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -36,7 +37,11 @@ func TestKNUSTServerStatusHandler(t *testing.T) {
 
 	var response models.KNUSTServerStatusResponse
 
-	json.NewDecoder(res.Body).Decode(&response)
+	err = json.NewDecoder(res.Body).Decode(&response)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	assert.Equal(t, "Fetched server status successfully", response.Message)
 

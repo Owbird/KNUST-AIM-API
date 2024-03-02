@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -36,7 +37,11 @@ func TestNewsHandler(t *testing.T) {
 
 	var response models.NewsResponse
 
-	json.NewDecoder(res.Body).Decode(&response)
+	err = json.NewDecoder(res.Body).Decode(&response)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	assert.Equal(t, "Fetched news successfully", response.Message)
 
@@ -75,7 +80,11 @@ func TestNewsDetailsHandler(t *testing.T) {
 
 	var response models.NewsDetailsResponse
 
-	json.NewDecoder(res.Body).Decode(&response)
+	err = json.NewDecoder(res.Body).Decode(&response)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	assert.Equal(t, "Fetched news successfully", response.Message)
 

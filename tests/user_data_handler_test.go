@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -18,7 +19,11 @@ import (
 
 func TestUserDataHandler(t *testing.T) {
 
-	godotenv.Load("../.env")
+	err := godotenv.Load("../.env")
+
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	router := gin.Default()
 	handlers := handlers.NewHandlers()
@@ -44,7 +49,11 @@ func TestUserDataHandler(t *testing.T) {
 
 	var response models.UserDataResponse
 
-	json.NewDecoder(res.Body).Decode(&response)
+	err = json.NewDecoder(res.Body).Decode(&response)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	assert.Equal(t, "Fetched user data successfully", response.Message)
 

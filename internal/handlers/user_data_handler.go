@@ -58,15 +58,33 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 
 	defer page.Close()
 
-	page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
+	err := page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
 
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't get user data. Please try again",
+		})
+	}
+
 	profileUrl := fmt.Sprintf("%sHome/StudentProfile", config.BaseUrl)
 
-	page.Navigate(profileUrl)
+	err = page.Navigate(profileUrl)
 
-	page.WaitLoad()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't get user data. Please try again",
+		})
+	}
+
+	err = page.WaitLoad()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't get user data. Please try again",
+		})
+	}
 
 	schoolEmail := *page.MustElement("input[name='StduentDTO.SchoolEmail']").MustAttribute("value")
 

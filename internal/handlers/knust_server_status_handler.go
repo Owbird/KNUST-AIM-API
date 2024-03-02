@@ -95,7 +95,11 @@ func (h *Handlers) KNUSTServerStatusBadgeHandler(c *gin.Context) {
 
 	var response models.KNUSTServerStatusResponse
 
-	json.NewDecoder(res.Body).Decode(&response)
+	err = json.NewDecoder(res.Body).Decode(&response)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't fetch badge"})
+	}
 
 	badge := "Up-green"
 

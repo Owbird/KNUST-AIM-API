@@ -16,7 +16,11 @@ import (
 )
 
 func TestAuthHandler(t *testing.T) {
-	godotenv.Load("../.env")
+	err := godotenv.Load("../.env")
+
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	router := gin.Default()
 	handlers := handlers.NewHandlers()
@@ -75,7 +79,11 @@ func TestAuthHandler(t *testing.T) {
 
 			var response models.UserResponse
 
-			json.NewDecoder(res.Body).Decode(&response)
+			err = json.NewDecoder(res.Body).Decode(&response)
+
+			if err != nil {
+				t.Fatal(err)
+			}
 
 			assert.Equal(t, tc.expectedMsg, response.Message)
 		})

@@ -31,7 +31,13 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 
 	var authPayload models.UserAuthPayload
 
-	c.BindJSON(&authPayload)
+	err := c.BindJSON(&authPayload)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't authorize user. Please try again",
+		})
+	}
 
 	controlUrl := launcher.New().NoSandbox(true).MustLaunch()
 
@@ -43,13 +49,31 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 
 	defer page.Close()
 
-	page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
+	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
 
-	page.Navigate(config.BaseUrl)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't authorize user. Please try again",
+		})
+	}
 
-	page.WaitLoad()
+	err = page.Navigate(config.BaseUrl)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't authorize user. Please try again",
+		})
+	}
+
+	err = page.WaitLoad()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't authorize user. Please try again",
+		})
+	}
 
 	page.MustWaitStable()
 

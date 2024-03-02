@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -58,7 +59,11 @@ func TestAuthMiddleware(t *testing.T) {
 
 			var response models.ErrorResponse
 
-			json.NewDecoder(res.Body).Decode(&response)
+			err = json.NewDecoder(res.Body).Decode(&response)
+
+			if err != nil {
+				log.Fatal(err)
+			}
 
 			assert.Equal(t, "Couldn't authorize user", response.Message)
 		})
