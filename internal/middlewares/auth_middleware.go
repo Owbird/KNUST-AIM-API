@@ -15,7 +15,7 @@ func AuthMiddleware(c *gin.Context) {
 	authHeader := c.Request.Header.Get("Authorization")
 
 	if authHeader == "" {
-		c.JSON(http.StatusUnauthorized, models.ErrorResponse{Message: "Please provide a user token"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{Message: "Please provide a user token"})
 
 		return
 	}
@@ -27,7 +27,7 @@ func AuthMiddleware(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, models.ErrorResponse{Message: "Couldn't authorize user"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{Message: "Couldn't authorize user"})
 
 		return
 	}
@@ -35,7 +35,7 @@ func AuthMiddleware(c *gin.Context) {
 	data, ok := token.Claims.(jwt.MapClaims)
 
 	if !ok {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't authorize user. Please try again"})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't authorize user. Please try again"})
 
 		return
 	}
