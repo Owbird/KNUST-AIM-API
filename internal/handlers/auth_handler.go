@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -9,8 +8,6 @@ import (
 	"github.com/Owbird/KNUST-AIM-API/config"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/gin-gonic/gin"
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -39,13 +36,7 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 		})
 	}
 
-	controlUrl := launcher.New().NoSandbox(true).MustLaunch()
-
-	var browser = rod.New().ControlURL(controlUrl).MustConnect().WithPanic(func(i interface{}) {
-		log.Println("[!] Headerless browser proberly lost context.")
-	})
-
-	page := browser.MustPage()
+	page := h.Browser.MustPage()
 
 	defer page.Close()
 

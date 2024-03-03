@@ -3,15 +3,12 @@ package handlers
 import (
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/gin-gonic/gin"
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 )
 
@@ -28,13 +25,7 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 
 	parsedCookies := cookies.(models.UserCookies)
 
-	controlUrl := launcher.New().NoSandbox(true).MustLaunch()
-
-	var browser = rod.New().ControlURL(controlUrl).MustConnect().WithPanic(func(i interface{}) {
-		log.Println("[!] Headerless browser proberly lost context.")
-	})
-
-	browser.MustSetCookies(&proto.NetworkCookie{
+	h.Browser.MustSetCookies(&proto.NetworkCookie{
 		Name:     ".AspNetCore.Antiforgery.oBcnM5PKSJA",
 		Value:    parsedCookies.Antiforgery,
 		Path:     "/students",
@@ -54,7 +45,7 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 		SameSite: "Lax",
 	})
 
-	page := browser.MustPage()
+	page := h.Browser.MustPage()
 
 	defer page.Close()
 
