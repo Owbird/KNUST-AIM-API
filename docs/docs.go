@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/auth/login": {
             "post": {
-                "description": "Authenticates the user the based on the credentials and returns a token which will be used to authorize requests",
+                "description": "Authenticates the user the based on the credentials and returns a token which will be used to authorize requests as a bearer token",
                 "consumes": [
                     "application/json"
                 ],

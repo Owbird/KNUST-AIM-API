@@ -13,7 +13,7 @@ import (
 )
 
 // @Summary Authenticate a user
-// @Description Authenticates the user the based on the credentials and returns a token which will be used to authorize requests
+// @Description Authenticates the user the based on the credentials and returns a token which will be used to authorize requests as a bearer token
 // @Tags Auth
 // @Produce json
 // @Accept  json
