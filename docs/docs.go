@@ -270,6 +270,38 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/results/selection": {
+            "get": {
+                "description": "Returns a list of years and semester that the results are available for",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Results"
+                ],
+                "summary": "Get available results",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResultsSelectionResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -451,6 +483,34 @@ const docTemplate = `{
                 },
                 "studentId": {
                     "type": "string"
+                }
+            }
+        },
+        "models.ResultsSelection": {
+            "type": "object",
+            "properties": {
+                "sems": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "years": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "models.ResultsSelectionResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "results": {
+                    "$ref": "#/definitions/models.ResultsSelection"
                 }
             }
         },

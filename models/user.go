@@ -54,3 +54,13 @@ type UserDataResponse struct {
 	Message  string   `json:"message"`
 	UserData UserData `json:"user_data"`
 }
+
+type ResultsSelection struct {
+	Years []string `json:"years"`
+	Sems  []string `json:"sems"`
+}
+
+type ResultsSelectionResponse struct {
+	Message string           `json:"message"`
+	Results ResultsSelection `json:"results"`
+}

@@ -116,6 +116,24 @@ definitions:
       studentId:
         type: string
     type: object
+  models.ResultsSelection:
+    properties:
+      sems:
+        items:
+          type: string
+        type: array
+      years:
+        items:
+          type: string
+        type: array
+    type: object
+  models.ResultsSelectionResponse:
+    properties:
+      message:
+        type: string
+      results:
+        $ref: '#/definitions/models.ResultsSelection'
+    type: object
   models.UserData:
     properties:
       contact:
@@ -312,4 +330,26 @@ paths:
       summary: User image
       tags:
       - User
+  /user/results/selection:
+    get:
+      description: Returns a list of years and semester that the results are available
+        for
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResultsSelectionResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get available results
+      tags:
+      - Results
 swagger: "2.0"
