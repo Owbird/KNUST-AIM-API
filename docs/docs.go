@@ -271,6 +271,67 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/results": {
+            "post": {
+                "description": "Returns results for the selected academic year and semester",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Results"
+                ],
+                "summary": "Get results",
+                "parameters": [
+                    {
+                        "description": "Year",
+                        "name": "year",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Sem",
+                        "name": "sem",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetResultsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/results/selection": {
             "get": {
                 "description": "Returns a list of years and semester that the results are available for",
@@ -336,6 +397,32 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "models.GetResultsResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "personal_data": {
+                    "$ref": "#/definitions/models.ResultsPersonalData"
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Results"
+                    }
+                },
+                "summary": {
+                    "$ref": "#/definitions/models.ResultsSummary"
+                },
+                "trails": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -486,6 +573,55 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Results": {
+            "type": "object",
+            "properties": {
+                "course_code": {
+                    "type": "string"
+                },
+                "course_name": {
+                    "type": "string"
+                },
+                "credits": {
+                    "type": "string"
+                },
+                "grade": {
+                    "type": "string"
+                },
+                "total_mark": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ResultsPersonalData": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "indexNo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "option": {
+                    "type": "string"
+                },
+                "programme": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ResultsSelection": {
             "type": "object",
             "properties": {
@@ -511,6 +647,37 @@ const docTemplate = `{
                 },
                 "results": {
                     "$ref": "#/definitions/models.ResultsSelection"
+                }
+            }
+        },
+        "models.ResultsSummary": {
+            "type": "object",
+            "properties": {
+                "credits_calculated": {
+                    "$ref": "#/definitions/models.ResultsSummaryExtra"
+                },
+                "credits_obtained": {
+                    "$ref": "#/definitions/models.ResultsSummaryExtra"
+                },
+                "credits_registered": {
+                    "$ref": "#/definitions/models.ResultsSummaryExtra"
+                },
+                "cwa": {
+                    "$ref": "#/definitions/models.ResultsSummaryExtra"
+                },
+                "weighted_marks": {
+                    "$ref": "#/definitions/models.ResultsSummaryExtra"
+                }
+            }
+        },
+        "models.ResultsSummaryExtra": {
+            "type": "object",
+            "properties": {
+                "cumulative": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "string"
                 }
             }
         },

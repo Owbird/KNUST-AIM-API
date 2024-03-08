@@ -21,6 +21,23 @@ definitions:
       message:
         type: string
     type: object
+  models.GetResultsResponse:
+    properties:
+      message:
+        type: string
+      personal_data:
+        $ref: '#/definitions/models.ResultsPersonalData'
+      results:
+        items:
+          $ref: '#/definitions/models.Results'
+        type: array
+      summary:
+        $ref: '#/definitions/models.ResultsSummary'
+      trails:
+        items:
+          type: string
+        type: array
+    type: object
   models.KNUSTServer:
     properties:
       status:
@@ -116,6 +133,38 @@ definitions:
       studentId:
         type: string
     type: object
+  models.Results:
+    properties:
+      course_code:
+        type: string
+      course_name:
+        type: string
+      credits:
+        type: string
+      grade:
+        type: string
+      total_mark:
+        type: string
+    type: object
+  models.ResultsPersonalData:
+    properties:
+      date:
+        type: string
+      indexNo:
+        type: string
+      name:
+        type: string
+      option:
+        type: string
+      programme:
+        type: string
+      studentId:
+        type: string
+      username:
+        type: string
+      year:
+        type: string
+    type: object
   models.ResultsSelection:
     properties:
       sems:
@@ -133,6 +182,26 @@ definitions:
         type: string
       results:
         $ref: '#/definitions/models.ResultsSelection'
+    type: object
+  models.ResultsSummary:
+    properties:
+      credits_calculated:
+        $ref: '#/definitions/models.ResultsSummaryExtra'
+      credits_obtained:
+        $ref: '#/definitions/models.ResultsSummaryExtra'
+      credits_registered:
+        $ref: '#/definitions/models.ResultsSummaryExtra'
+      cwa:
+        $ref: '#/definitions/models.ResultsSummaryExtra'
+      weighted_marks:
+        $ref: '#/definitions/models.ResultsSummaryExtra'
+    type: object
+  models.ResultsSummaryExtra:
+    properties:
+      cumulative:
+        type: string
+      semester:
+        type: string
     type: object
   models.UserData:
     properties:
@@ -330,6 +399,46 @@ paths:
       summary: User image
       tags:
       - User
+  /user/results:
+    post:
+      consumes:
+      - application/json
+      description: Returns results for the selected academic year and semester
+      parameters:
+      - description: Year
+        in: body
+        name: year
+        required: true
+        schema:
+          type: string
+      - description: Sem
+        in: body
+        name: sem
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetResultsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get results
+      tags:
+      - Results
   /user/results/selection:
     get:
       description: Returns a list of years and semester that the results are available
