@@ -54,3 +54,58 @@ type UserDataResponse struct {
 	Message  string   `json:"message"`
 	UserData UserData `json:"user_data"`
 }
+
+type ResultsSelection struct {
+	Years []string `json:"years"`
+	Sems  []string `json:"sems"`
+}
+
+type ResultsSelectionResponse struct {
+	Message string           `json:"message"`
+	Results ResultsSelection `json:"results"`
+}
+
+type GetResultsPayload struct {
+	Year string `json:"year"`
+	Sem  string `json:"sem"`
+}
+
+type ResultsPersonalData struct {
+	Name      string `json:"name"`
+	Year      string `json:"year"`
+	IndexNo   string `json:"indexNo"`
+	Programme string `json:"programme"`
+	StudentID string `json:"studentId"`
+	Date      string `json:"date"`
+	Option    string `json:"option"`
+	Username  string `json:"username"`
+}
+
+type Results struct {
+	CourseCode string `json:"course_code"`
+	CourseName string `json:"course_name"`
+	Credits    string `json:"credits"`
+	Grade      string `json:"grade"`
+	TotalMark  string `json:"total_mark"`
+}
+
+type ResultsSummaryExtra struct {
+	Semester   string `json:"semester"`
+	Cumulative string `json:"cumulative"`
+}
+
+type ResultsSummary struct {
+	CreditsRegistered ResultsSummaryExtra `json:"credits_registered"`
+	CreditsObtained   ResultsSummaryExtra `json:"credits_obtained"`
+	CreditsCalculated ResultsSummaryExtra `json:"credits_calculated"`
+	WeightedMarks     ResultsSummaryExtra `json:"weighted_marks"`
+	CWA               ResultsSummaryExtra `json:"cwa"`
+}
+
+type GetResultsResponse struct {
+	Message      string              `json:"message"`
+	PersonalData ResultsPersonalData `json:"personal_data"`
+	Results      []Results           `json:"results"`
+	Summary      ResultsSummary      `json:"summary"`
+	Trails       []string            `json:"trails"`
+}

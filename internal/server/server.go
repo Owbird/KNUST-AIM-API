@@ -79,6 +79,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 				user.Use(middlewares.AuthMiddleware)
 				user.GET("/", handlers.GetUserData)
 				user.GET("/image/:id", handlers.GetUserImage)
+				user.POST("/results", handlers.GetResultsHandler)
+				user.GET("/results/selection", handlers.ResultSelectionHandler)
 			}
 		}
 	}
