@@ -52,6 +52,7 @@ func TestNewsHandler(t *testing.T) {
 			assert.NotEqual(t, news.Title, "")
 			assert.NotEqual(t, news.Description, "")
 			assert.NotEqual(t, news.Slug, "")
+			assert.NotEqual(t, news.FeaturedImage, "")
 		})
 
 	}
