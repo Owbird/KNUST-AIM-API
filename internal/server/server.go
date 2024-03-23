@@ -10,6 +10,7 @@ import (
 	"github.com/Owbird/KNUST-AIM-API/docs"
 	"github.com/Owbird/KNUST-AIM-API/internal/handlers"
 	"github.com/Owbird/KNUST-AIM-API/internal/middlewares"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
 	swaggerfiles "github.com/swaggo/files"
@@ -49,6 +50,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	handlers := handlers.NewHandlers()
 
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowCredentials = true
+
+	router.Use(cors.New(config))
 	router.GET("/", handlers.HelloHandler)
 
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
