@@ -1,11 +1,12 @@
 package models
 
 type News struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Date        string `json:"date"`
-	Category    string `json:"category"`
-	Slug        string `json:"slug"`
+	Title         string `json:"title"`
+	Description   string `json:"description"`
+	Date          string `json:"date"`
+	Category      string `json:"category"`
+	Slug          string `json:"slug"`
+	FeaturedImage string `json:"featured_image"`
 }
 
 type NewsResponse struct {

@@ -49,12 +49,15 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 
 		categoryTag := newsTag.Find("span", "class", "post-cat")
 
+		featuredImage := newsTag.Find("img").Attrs()["src"]
+
 		appNews = append(appNews, models.News{
-			Title:       titleTag.Text(),
-			Description: descriptionTag.Text(),
-			Date:        strings.TrimSpace(date),
-			Category:    strings.TrimSpace(categoryTag.Text()),
-			Slug:        strings.TrimSpace(slug),
+			Title:         titleTag.Text(),
+			Description:   descriptionTag.Text(),
+			Date:          strings.TrimSpace(date),
+			Category:      strings.TrimSpace(categoryTag.Text()),
+			Slug:          strings.TrimSpace(slug),
+			FeaturedImage: fmt.Sprintf("%s%s", config.MainUrl , featuredImage),
 		})
 	}
 
@@ -64,7 +67,6 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 	})
 
 }
-
 
 // @Summary Get news post details
 // @Description Get the post details of the news based on the slug
