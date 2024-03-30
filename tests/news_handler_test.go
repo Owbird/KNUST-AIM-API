@@ -96,6 +96,8 @@ func TestNewsDetailsHandler(t *testing.T) {
 
 	assert.NotEqual(t, len(response.News.Content), 0)
 
+	assert.NotEqual(t, response.News.ReadTime, 0)
+
 	for index, content := range response.News.Content {
 		t.Run(fmt.Sprintf("Non Empty field for #%v", index), func(t *testing.T) {
 			assert.NotEqual(t, content.Type, "")

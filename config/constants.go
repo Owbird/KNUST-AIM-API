@@ -9,4 +9,6 @@ const (
 	HostUrlProd  = "https://knust-aim-api.fly.dev"
 	HostUrlDev   = "http://localhost:8080"
 	UserImageUrl = "https://webapps.knust.edu.gh/utils/getimage.php"
+
+	AVGReadSpeed = 250
 )

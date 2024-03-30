@@ -24,6 +24,7 @@ type NewsDetails struct {
 	FeaturedImage string               `json:"featured_image"`
 	Date          string               `json:"date"`
 	Source        string               `json:"source"`
+	ReadTime      int                  `json:"read_time"`
 	Content       []NewsDetailsContent `json:"content"`
 }
 

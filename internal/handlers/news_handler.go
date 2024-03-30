@@ -112,6 +112,8 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 
 	content := []models.NewsDetailsContent{}
 
+	totalWords := 0
+
 	for _, child := range articleContentTag.Children() {
 
 		switch child.Pointer.Data {
@@ -120,6 +122,8 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 				Type:  "text",
 				Value: child.Text(),
 			})
+
+			totalWords += len(strings.Split(child.Text(), " "))
 
 		case "figure":
 			img := child.Find("img").Attrs()["src"]
@@ -131,6 +135,7 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 		}
 	}
 
+
 	c.JSON(http.StatusOK, models.NewsDetailsResponse{
 		Message: "Fetched news successfully",
 		News: models.NewsDetails{
@@ -139,6 +144,7 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 			Date:          strings.TrimSpace(date),
 			Source:        strings.TrimSpace(source),
 			Content:       content,
+			ReadTime: totalWords / config.AVGReadSpeed,
 		},
 	})
 
