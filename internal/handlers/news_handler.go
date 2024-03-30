@@ -39,6 +39,8 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 
 		slug := strings.Split(newsTag.Attrs()["href"], "news-items")[1]
 
+		slug = strings.ReplaceAll(slug, "/", "")
+
 		titleTag := newsTag.Find("h3")
 
 		descriptionTag := newsTag.Find("p")
@@ -57,7 +59,7 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 			Date:          strings.TrimSpace(date),
 			Category:      strings.TrimSpace(categoryTag.Text()),
 			Slug:          strings.TrimSpace(slug),
-			FeaturedImage: fmt.Sprintf("%s%s", config.MainUrl , featuredImage),
+			FeaturedImage: fmt.Sprintf("%s%s", config.MainUrl, featuredImage),
 		})
 	}
 
