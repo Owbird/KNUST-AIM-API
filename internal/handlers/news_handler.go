@@ -39,6 +39,8 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 
 		slug := strings.Split(newsTag.Attrs()["href"], "news-items")[1]
 
+		slug = strings.ReplaceAll(slug, "/", "")
+
 		titleTag := newsTag.Find("h3")
 
 		descriptionTag := newsTag.Find("p")
@@ -57,7 +59,7 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 			Date:          strings.TrimSpace(date),
 			Category:      strings.TrimSpace(categoryTag.Text()),
 			Slug:          strings.TrimSpace(slug),
-			FeaturedImage: fmt.Sprintf("%s%s", config.MainUrl , featuredImage),
+			FeaturedImage: fmt.Sprintf("%s%s", config.MainUrl, featuredImage),
 		})
 	}
 
@@ -110,6 +112,8 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 
 	content := []models.NewsDetailsContent{}
 
+	totalWords := 0
+
 	for _, child := range articleContentTag.Children() {
 
 		switch child.Pointer.Data {
@@ -118,6 +122,8 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 				Type:  "text",
 				Value: child.Text(),
 			})
+
+			totalWords += len(strings.Split(child.Text(), " "))
 
 		case "figure":
 			img := child.Find("img").Attrs()["src"]
@@ -129,6 +135,7 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 		}
 	}
 
+
 	c.JSON(http.StatusOK, models.NewsDetailsResponse{
 		Message: "Fetched news successfully",
 		News: models.NewsDetails{
@@ -137,6 +144,7 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 			Date:          strings.TrimSpace(date),
 			Source:        strings.TrimSpace(source),
 			Content:       content,
+			ReadTime: totalWords / config.AVGReadSpeed,
 		},
 	})
 
