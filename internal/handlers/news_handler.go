@@ -22,9 +22,9 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 	soup.Header("User-Agent", config.UserAgent)
 
 	res, err := soup.Get(config.NewsEndpoint)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't fetch news"})
+		return
 	}
 
 	htmlTree := soup.HTMLParse(res)
@@ -67,7 +67,6 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 		Message: "Fetched news successfully",
 		News:    appNews,
 	})
-
 }
 
 // @Summary Get news post details
@@ -87,9 +86,9 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 	newsEndpoint := fmt.Sprintf("%s/news-items/%s", config.NewsEndpoint, slug)
 
 	res, err := soup.Get(newsEndpoint)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't fetch news"})
+		return
 	}
 
 	htmlTree := soup.HTMLParse(res)
@@ -115,7 +114,6 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 	totalWords := 0
 
 	for _, child := range articleContentTag.Children() {
-
 		switch child.Pointer.Data {
 		case "p":
 			content = append(content, models.NewsDetailsContent{
@@ -135,7 +133,6 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 		}
 	}
 
-
 	c.JSON(http.StatusOK, models.NewsDetailsResponse{
 		Message: "Fetched news successfully",
 		News: models.NewsDetails{
@@ -144,8 +141,7 @@ func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 			Date:          strings.TrimSpace(date),
 			Source:        strings.TrimSpace(source),
 			Content:       content,
-			ReadTime: totalWords / config.AVGReadSpeed,
+			ReadTime:      totalWords / config.AVGReadSpeed,
 		},
 	})
-
 }
