@@ -53,6 +53,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AllowCredentials = true
+	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
 
 	router.Use(cors.New(config))
 	router.GET("/", handlers.HelloHandler)
