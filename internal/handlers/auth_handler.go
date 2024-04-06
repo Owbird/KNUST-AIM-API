@@ -94,27 +94,21 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 		})
 	}
 
-	if len(cookies) == 1 && cookies[0].Name == ".AspNetCore.Antiforgery.oBcnM5PKSJA" {
-		c.JSON(http.StatusUnauthorized, models.ErrorResponse{
-			Message: "Credentials are incorrect. Please try again",
-		})
-		return
+	userCookies := models.UserCookies{}
+
+	for _, cookie := range cookies {
+
+		switch cookie.Name {
+		case ".AspNetCore.Antiforgery.oBcnM5PKSJA":
+			userCookies.Antiforgery = cookie.Value
+		case ".AspNetCore.Session":
+			userCookies.Session = cookie.Value
+		case ".AspNetCore.Identity.Application":
+			userCookies.Identity = cookie.Value
+		}
 	}
 
-	if len(cookies) >= 3 {
-		userCookies := models.UserCookies{}
-
-		for _, cookie := range cookies {
-
-			switch cookie.Name {
-			case ".AspNetCore.Antiforgery.oBcnM5PKSJA":
-				userCookies.Antiforgery = cookie.Value
-			case ".AspNetCore.Session":
-				userCookies.Session = cookie.Value
-			case ".AspNetCore.Identity.Application":
-				userCookies.Identity = cookie.Value
-			}
-		}
+	if userCookies.Identity != "" {
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 			jwt.MapClaims{
@@ -138,9 +132,10 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 		})
 
 		return
+
 	}
 
-	c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-		Message: "Couldn't authorize user. Please try again",
+	c.JSON(http.StatusUnauthorized, models.ErrorResponse{
+		Message: "Incorrect credentials. Please try again",
 	})
 }
