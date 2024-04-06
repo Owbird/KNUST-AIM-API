@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
+	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod/lib/proto"
@@ -25,25 +27,24 @@ import (
 // @Failure 401 {object} models.ErrorResponse
 // @Router /auth/login [post]
 func (h *Handlers) AuthHandler(c *gin.Context) {
-
 	var authPayload models.UserAuthPayload
 
 	err := c.BindJSON(&authPayload)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't authorize user. Please try again",
 		})
 	}
 
-	page := h.Browser.MustPage()
+	browser := utils.NewBrowser()
+
+	page := browser.MustPage()
 
 	defer page.Close()
 
 	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't authorize user. Please try again",
@@ -51,7 +52,6 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 	}
 
 	err = page.Navigate(config.BaseUrl)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't authorize user. Please try again",
@@ -59,7 +59,6 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 	}
 
 	err = page.WaitLoad()
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't authorize user. Please try again",
@@ -87,7 +86,6 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 	page.MustWaitLoad()
 
 	cookies, err := page.Cookies([]string{config.BaseUrl})
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't authorize user. Please try again",
@@ -97,7 +95,6 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 	userCookies := models.UserCookies{}
 
 	for _, cookie := range cookies {
-
 		switch cookie.Name {
 		case ".AspNetCore.Antiforgery.oBcnM5PKSJA":
 			userCookies.Antiforgery = cookie.Value
@@ -117,7 +114,6 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 			})
 
 		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 				Message: "Couldn't authorize user. Please try again",
@@ -134,6 +130,8 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 		return
 
 	}
+
+	log.Println(userCookies)
 
 	c.JSON(http.StatusUnauthorized, models.ErrorResponse{
 		Message: "Incorrect credentials. Please try again",
