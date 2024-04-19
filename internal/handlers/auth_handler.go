@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -131,9 +130,9 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 
 	}
 
-	log.Println(userCookies)
-
 	c.JSON(http.StatusUnauthorized, models.ErrorResponse{
 		Message: "Incorrect credentials. Please try again",
 	})
+
+	return
 }
