@@ -11,7 +11,6 @@ import (
 )
 
 func AuthMiddleware(c *gin.Context) {
-
 	authHeader := c.Request.Header.Get("Authorization")
 
 	if authHeader == "" {
@@ -25,9 +24,8 @@ func AuthMiddleware(c *gin.Context) {
 	token, err := jwt.Parse(auth, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
-
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{Message: "Couldn't authorize user"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{Message: "Couldn't authorize user. Invalid token"})
 
 		return
 	}
