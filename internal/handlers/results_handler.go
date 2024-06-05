@@ -331,6 +331,10 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 
 	trails := strings.Split(summarySection[5].MustElement("th").MustText(), ", ")
 
+	if trails[0] == "<none>" {
+		trails = []string{}
+	}
+
 	c.JSON(http.StatusOK, models.GetResultsResponse{
 		Message: "Fetched results successfully",
 		PersonalData: models.ResultsPersonalData{
