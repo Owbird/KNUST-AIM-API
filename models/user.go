@@ -72,6 +72,7 @@ type GetResultsPayload struct {
 
 type ResultsPersonalData struct {
 	Name      string `json:"name"`
+	Sem       string `json:"sem"`
 	Year      string `json:"year"`
 	IndexNo   string `json:"indexNo"`
 	Programme string `json:"programme"`

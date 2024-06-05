@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
+	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod/lib/proto"
@@ -25,7 +26,9 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 
 	parsedCookies := cookies.(models.UserCookies)
 
-	h.Browser.MustSetCookies(&proto.NetworkCookie{
+	browser := utils.NewBrowser()
+
+	browser.MustSetCookies(&proto.NetworkCookie{
 		Name:     ".AspNetCore.Antiforgery.oBcnM5PKSJA",
 		Value:    parsedCookies.Antiforgery,
 		Path:     "/students",
@@ -45,14 +48,13 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 		SameSite: "Lax",
 	})
 
-	page := h.Browser.MustPage()
+	page := browser.MustPage()
 
 	defer page.Close()
 
 	err := page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get user data. Please try again",
@@ -62,7 +64,6 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 	profileUrl := fmt.Sprintf("%sHome/StudentProfile", config.BaseUrl)
 
 	err = page.Navigate(profileUrl)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get user data. Please try again",
@@ -70,7 +71,6 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 	}
 
 	err = page.WaitLoad()
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get user data. Please try again",
@@ -143,7 +143,6 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 		Message:  "Fetched user data successfully",
 		UserData: userData,
 	})
-
 }
 
 // @Summary User image
@@ -157,7 +156,6 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 // @Router /user/image/{studentId} [get]
 func (h *Handlers) GetUserImage(c *gin.Context) {
-
 	id, ok := c.Params.Get("id")
 
 	if !ok {
@@ -171,7 +169,6 @@ func (h *Handlers) GetUserImage(c *gin.Context) {
 	url := fmt.Sprintf("%s?id=%s", config.UserImageUrl, id)
 
 	resp, err := http.Get(url)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't fetch user image",
@@ -181,7 +178,6 @@ func (h *Handlers) GetUserImage(c *gin.Context) {
 	}
 
 	body, err := io.ReadAll(resp.Body)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't fetch user image",

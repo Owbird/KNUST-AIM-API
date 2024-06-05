@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
+	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod"
@@ -25,7 +26,9 @@ func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 
 	parsedCookies := cookies.(models.UserCookies)
 
-	h.Browser.MustSetCookies(&proto.NetworkCookie{
+	browser := utils.NewBrowser()
+
+	browser.MustSetCookies(&proto.NetworkCookie{
 		Name:     ".AspNetCore.Antiforgery.oBcnM5PKSJA",
 		Value:    parsedCookies.Antiforgery,
 		Path:     "/students",
@@ -45,14 +48,13 @@ func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 		SameSite: "Lax",
 	})
 
-	page := h.Browser.MustPage()
+	page := browser.MustPage()
 
 	defer page.Close()
 
 	err := page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get results. Please try again",
@@ -62,7 +64,6 @@ func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 	selectionUrl := fmt.Sprintf("%sResultChecker/AcademicSemSelection", config.BaseUrl)
 
 	err = page.Navigate(selectionUrl)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get results. Please try again",
@@ -70,7 +71,6 @@ func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 	}
 
 	err = page.WaitLoad()
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get results. Please try again",
@@ -82,11 +82,9 @@ func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 	years := []string{}
 
 	for _, child := range yearsEl.MustDescribe().Children {
-
 		if child.Attributes[0] == "value" {
 			years = append(years, child.Attributes[1])
 		}
-
 	}
 
 	semsEl := page.MustElement("select[id='AcademicSemester']")
@@ -94,11 +92,9 @@ func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 	sems := []string{}
 
 	for _, child := range semsEl.MustDescribe().Children {
-
 		if child.Attributes[0] == "value" {
 			sems = append(sems, child.Attributes[1])
 		}
-
 	}
 
 	c.JSON(http.StatusOK, models.ResultsSelectionResponse{
@@ -108,7 +104,6 @@ func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 			Sems:  sems,
 		},
 	})
-
 }
 
 // @Summary Get results
@@ -128,7 +123,9 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 
 	parsedCookies := cookies.(models.UserCookies)
 
-	h.Browser.MustSetCookies(&proto.NetworkCookie{
+	browser := utils.NewBrowser()
+
+	browser.MustSetCookies(&proto.NetworkCookie{
 		Name:     ".AspNetCore.Antiforgery.oBcnM5PKSJA",
 		Value:    parsedCookies.Antiforgery,
 		Path:     "/students",
@@ -151,7 +148,6 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 	var resultsPayload models.GetResultsPayload
 
 	err := c.BindJSON(&resultsPayload)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't fetch user results. Please try again",
@@ -160,14 +156,13 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 		return
 	}
 
-	page := h.Browser.MustPage()
+	page := browser.MustPage()
 
 	defer page.Close()
 
 	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get results. Please try again",
@@ -179,7 +174,6 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 	selectionUrl := fmt.Sprintf("%sResultChecker/AcademicSemSelection", config.BaseUrl)
 
 	err = page.Navigate(selectionUrl)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get results. Please try again",
@@ -189,7 +183,6 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 	}
 
 	err = page.WaitLoad()
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get results. Please try again",
@@ -201,7 +194,6 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 	yearsEl := page.MustElement("select[id='ForminputState']")
 
 	err = yearsEl.Select([]string{fmt.Sprintf("option[value='%s']", resultsPayload.Year)}, true, rod.SelectorTypeCSSSector)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: "Unknown year. Please use the available academic years.",
@@ -213,7 +205,6 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 	semsEl := page.MustElement("select[id='AcademicSemester']")
 
 	err = semsEl.Select([]string{fmt.Sprintf("option[value='%s']", resultsPayload.Sem)}, true, rod.SelectorTypeCSSSector)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: "Unknown sem. Please use the available academic sems.",
@@ -276,7 +267,6 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 		for i := 0; i < 5; i++ {
 
 			el, err := page.ElementFromNode(row.MustDescribe().Children[i])
-
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 					Message: "Couldn't get results. Please try again",
@@ -286,7 +276,6 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 			}
 
 			text, err := el.Text()
-
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 					Message: "Couldn't get results. Please try again",
@@ -342,11 +331,16 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 
 	trails := strings.Split(summarySection[5].MustElement("th").MustText(), ", ")
 
+	if trails[0] == "<none>" {
+		trails = []string{}
+	}
+
 	c.JSON(http.StatusOK, models.GetResultsResponse{
 		Message: "Fetched results successfully",
 		PersonalData: models.ResultsPersonalData{
 			Name:      name,
 			Year:      year,
+			Sem:       resultsPayload.Sem,
 			IndexNo:   indexNo,
 			Programme: programme,
 			StudentID: studentId,
@@ -379,5 +373,4 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 		},
 		Trails: trails,
 	})
-
 }

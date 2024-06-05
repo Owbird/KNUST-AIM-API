@@ -53,6 +53,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AllowCredentials = true
+	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
 
 	router.Use(cors.New(config))
 	router.GET("/", handlers.HelloHandler)
@@ -82,9 +83,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 			user := apiV1.Group("/user")
 			{
+				user.GET("/image/:id", handlers.GetUserImage)
+
 				user.Use(middlewares.AuthMiddleware)
 				user.GET("/", handlers.GetUserData)
-				user.GET("/image/:id", handlers.GetUserImage)
 				user.POST("/results", handlers.GetResultsHandler)
 				user.GET("/results/selection", handlers.ResultSelectionHandler)
 			}
