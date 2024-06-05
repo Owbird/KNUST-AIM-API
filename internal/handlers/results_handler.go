@@ -340,6 +340,7 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 		PersonalData: models.ResultsPersonalData{
 			Name:      name,
 			Year:      year,
+			Sem:       resultsPayload.Sem,
 			IndexNo:   indexNo,
 			Programme: programme,
 			StudentID: studentId,
