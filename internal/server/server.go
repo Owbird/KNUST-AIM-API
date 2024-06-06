@@ -3,8 +3,6 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/Owbird/KNUST-AIM-API/docs"
@@ -17,9 +15,11 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-type Server struct {
-	port int
-}
+const (
+	PORT = 8080
+)
+
+type Server struct{}
 
 func NewServer() *http.Server {
 	docs.SwaggerInfo.Title = "KNUST AIM API"
@@ -28,15 +28,12 @@ func NewServer() *http.Server {
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
-	NewServer := &Server{
-		port: port,
-	}
+	newServer := &Server{}
 
 	// Declare Server config
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", NewServer.port),
-		Handler:      NewServer.RegisterRoutes(),
+		Addr:         fmt.Sprintf(":%d", PORT),
+		Handler:      newServer.RegisterRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
