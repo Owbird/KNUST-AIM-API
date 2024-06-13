@@ -17,6 +17,7 @@ import (
 
 const (
 	PORT = 8080
+	IP   = "0.0.0.0"
 )
 
 type Server struct{}
@@ -32,7 +33,7 @@ func NewServer() *http.Server {
 
 	// Declare Server config
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", PORT),
+		Addr:         fmt.Sprintf("%s:%d", IP, PORT),
 		Handler:      newServer.RegisterRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
