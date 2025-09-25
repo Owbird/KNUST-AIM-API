@@ -25,6 +25,7 @@ clean:
 # Create docs
 docs:
 	@echo "Creating docs..."
+	@go install github.com/swaggo/swag/cmd/swag@latest
 	@swag init -g cmd/api/main.go
 
 # Live Reload
