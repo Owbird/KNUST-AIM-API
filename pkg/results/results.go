@@ -11,7 +11,9 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
-func SelectResult(cookies any) (models.ResultsSelection, error) {
+type ResultsFunctions struct{}
+
+func (rf ResultsFunctions) SelectResult(cookies any) (models.ResultsSelection, error) {
 	parsedCookies := cookies.(models.UserCookies)
 
 	browser := utils.NewBrowser()
@@ -85,7 +87,7 @@ func SelectResult(cookies any) (models.ResultsSelection, error) {
 	}, nil
 }
 
-func GetResults(cookies any, payload models.GetResultsPayload) (models.GetResultsResponse, error) {
+func (rf ResultsFunctions) GetResults(cookies any, payload models.GetResultsPayload) (models.GetResultsResponse, error) {
 	parsedCookies := cookies.(models.UserCookies)
 
 	browser := utils.NewBrowser()

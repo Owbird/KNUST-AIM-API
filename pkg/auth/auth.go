@@ -13,7 +13,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func AuthenticateUser(payload models.UserAuthPayload) (string, error) {
+
+type AuthFunctions struct {}
+
+func (af AuthFunctions) AuthenticateUser(payload models.UserAuthPayload) (string, error) {
 	browser := utils.NewBrowser()
 
 	page := browser.MustPage()

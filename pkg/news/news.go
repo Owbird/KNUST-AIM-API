@@ -9,7 +9,9 @@ import (
 	"github.com/anaskhan96/soup"
 )
 
-func GetNews() ([]models.News, error) {
+type NewsFunctions struct{}
+
+func (nf NewsFunctions) GetNews() ([]models.News, error) {
 	soup.Header("User-Agent", config.UserAgent)
 
 	res, err := soup.Get(config.NewsEndpoint)
@@ -56,7 +58,7 @@ func GetNews() ([]models.News, error) {
 	return appNews, nil
 }
 
-func GetNewsDetails(slug string) (models.NewsDetails, error) {
+func (nf NewsFunctions) GetNewsDetails(slug string) (models.NewsDetails, error) {
 	soup.Header("User-Agent", config.UserAgent)
 
 	newsEndpoint := fmt.Sprintf("%s/news-items/%s", config.NewsEndpoint, slug)

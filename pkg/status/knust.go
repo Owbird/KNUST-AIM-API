@@ -12,7 +12,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetKNUSTStatus() []models.KNUSTServer {
+type StatusFunctions struct{}
+
+func (s StatusFunctions) GetKNUSTStatus() []models.KNUSTServer {
 	servers := []models.KNUSTServer{}
 
 	wg := sync.WaitGroup{}
@@ -56,7 +58,7 @@ func GetKNUSTStatus() []models.KNUSTServer {
 	return servers
 }
 
-func GetStatusBadge() ([]byte, error) {
+func (sf StatusFunctions) GetStatusBadge() ([]byte, error) {
 	host := config.HostUrlProd
 
 	if gin.Mode() == "debug" {

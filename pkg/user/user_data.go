@@ -12,7 +12,9 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
-func GetUserData(cookies any) (models.UserData, error) {
+type UserFunctions struct{}
+
+func (u UserFunctions) GetUserData(cookies any) (models.UserData, error) {
 	parsedCookies := cookies.(models.UserCookies)
 
 	browser := utils.NewBrowser()
@@ -125,7 +127,7 @@ func GetUserData(cookies any) (models.UserData, error) {
 	return userData, nil
 }
 
-func GetUserImage(id string) ([]byte, error) {
+func (u UserFunctions) GetUserImage(id string) ([]byte, error) {
 	url := fmt.Sprintf("%s?id=%s", config.UserImageUrl, id)
 
 	resp, err := http.Get(url)
