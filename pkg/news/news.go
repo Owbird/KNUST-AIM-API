@@ -11,7 +11,11 @@ import (
 
 type NewsFunctions struct{}
 
-func (nf NewsFunctions) GetNews() ([]models.News, error) {
+func NewNewsFunctions() *NewsFunctions {
+	return &NewsFunctions{}
+}
+
+func (nf *NewsFunctions) GetNews() ([]models.News, error) {
 	soup.Header("User-Agent", config.UserAgent)
 
 	res, err := soup.Get(config.NewsEndpoint)
@@ -58,12 +62,15 @@ func (nf NewsFunctions) GetNews() ([]models.News, error) {
 	return appNews, nil
 }
 
-func (nf NewsFunctions) GetNewsDetails(slug string) (models.NewsDetails, error) {
+func (nf *NewsFunctions) GetNewsDetails(slug string) (models.NewsDetails, error) {
 	soup.Header("User-Agent", config.UserAgent)
 
 	newsEndpoint := fmt.Sprintf("%s/news-items/%s", config.NewsEndpoint, slug)
 
 	res, err := soup.Get(newsEndpoint)
+	if err != nil {
+		return models.NewsDetails{}, err
+	}
 
 	htmlTree := soup.HTMLParse(res)
 

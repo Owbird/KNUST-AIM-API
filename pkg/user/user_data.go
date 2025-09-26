@@ -14,7 +14,11 @@ import (
 
 type UserFunctions struct{}
 
-func (u UserFunctions) GetUserData(cookies any) (models.UserData, error) {
+func NewUserFunctions() *UserFunctions {
+	return &UserFunctions{}
+}
+
+func (u *UserFunctions) GetUserData(cookies any) (models.UserData, error) {
 	parsedCookies := cookies.(models.UserCookies)
 
 	browser := utils.NewBrowser()
@@ -127,7 +131,7 @@ func (u UserFunctions) GetUserData(cookies any) (models.UserData, error) {
 	return userData, nil
 }
 
-func (u UserFunctions) GetUserImage(id string) ([]byte, error) {
+func (u *UserFunctions) GetUserImage(id string) ([]byte, error) {
 	url := fmt.Sprintf("%s?id=%s", config.UserImageUrl, id)
 
 	resp, err := http.Get(url)

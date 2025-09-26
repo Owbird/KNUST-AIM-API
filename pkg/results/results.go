@@ -13,7 +13,11 @@ import (
 
 type ResultsFunctions struct{}
 
-func (rf ResultsFunctions) SelectResult(cookies any) (models.ResultsSelection, error) {
+func NewResultsFunctions() *ResultsFunctions {
+	return &ResultsFunctions{}
+}
+
+func (rf *ResultsFunctions) SelectResult(cookies any) (models.ResultsSelection, error) {
 	parsedCookies := cookies.(models.UserCookies)
 
 	browser := utils.NewBrowser()
@@ -87,7 +91,7 @@ func (rf ResultsFunctions) SelectResult(cookies any) (models.ResultsSelection, e
 	}, nil
 }
 
-func (rf ResultsFunctions) GetResults(cookies any, payload models.GetResultsPayload) (models.GetResultsResponse, error) {
+func (rf *ResultsFunctions) GetResults(cookies any, payload models.GetResultsPayload) (models.GetResultsResponse, error) {
 	parsedCookies := cookies.(models.UserCookies)
 
 	browser := utils.NewBrowser()
@@ -259,12 +263,12 @@ func (rf ResultsFunctions) GetResults(cookies any, payload models.GetResultsPayl
 		trails = []string{}
 	}
 
-	models.GetResultsResponse{
+	return models.GetResultsResponse{
 		Message: "Fetched results successfully",
 		PersonalData: models.ResultsPersonalData{
 			Name:      name,
 			Year:      year,
-			Sem:       resultsPayload.Sem,
+			Sem:       payload.Sem,
 			IndexNo:   indexNo,
 			Programme: programme,
 			StudentID: studentId,

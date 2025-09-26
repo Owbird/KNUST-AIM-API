@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var userFunctions = user.NewUserFunctions()
+
 // @Summary Get User Data
 // @Description Returns personal, programme and contact user data
 // @Tags User
@@ -19,7 +21,7 @@ import (
 func (h *Handlers) GetUserData(c *gin.Context) {
 	cookies, _ := c.Get("userCookies")
 
-	userData, err := user.GetUserData(cookies)
+	userData, err := userFunctions.GetUserData(cookies)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get user data. Please try again",
@@ -53,7 +55,7 @@ func (h *Handlers) GetUserImage(c *gin.Context) {
 		return
 	}
 
-	imageBytes, err := user.GetUserImage(id)
+	imageBytes, err := userFunctions.GetUserImage(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't fetch user image",

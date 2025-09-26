@@ -4,9 +4,11 @@ import (
 	"net/http"
 
 	"github.com/Owbird/KNUST-AIM-API/models"
-	news "github.com/Owbird/KNUST-AIM-API/pkg"
+	"github.com/Owbird/KNUST-AIM-API/pkg/news"
 	"github.com/gin-gonic/gin"
 )
+
+var newsFunctions = news.NewNewsFunctions()
 
 // @Summary Get latest news
 // @Description Returns the latest news available
@@ -16,7 +18,7 @@ import (
 // @Failure 500 {object} models.ErrorResponse
 // @Router /news [get]
 func (h *Handlers) GetNewsHandler(c *gin.Context) {
-	appNews, err := news.GetNews()
+	appNews, err := newsFunctions.GetNews()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't fetch news"})
 		return
@@ -40,7 +42,7 @@ func (h *Handlers) GetNewsHandler(c *gin.Context) {
 func (h *Handlers) GetNewsDetailsHandler(c *gin.Context) {
 	slug := c.Param("slug")
 
-	details, err := news.GetNewsDetails(slug)
+	details, err := newsFunctions.GetNewsDetails(slug)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't fetch news"})
 		return

@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var authFunctions = auth.NewAuthFunctions()
+
 // @Summary Authenticate a user
 // @Description Authenticates the user the based on the credentials and returns a token which will be used to authorize requests as a bearer token
 // @Tags Auth
@@ -30,7 +32,7 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 		})
 	}
 
-	token, err := auth.AuthenticateUser(authPayload)
+	token, err := authFunctions.AuthenticateUser(authPayload)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't authorize user. Please try again",

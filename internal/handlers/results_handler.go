@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var resultsFunctions = results.NewResultsFunctions()
+
 // @Summary Get available results
 // @Description Returns a list of years and semester that the results are available for
 // @Tags Results
@@ -19,7 +21,7 @@ import (
 func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 	cookies, _ := c.Get("userCookies")
 
-	res, err := results.SelectResult(cookies)
+	res, err := resultsFunctions.SelectResult(cookies)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get results. Please try again",
@@ -58,7 +60,7 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 		return
 	}
 
-	res, err := results.GetResults(cookies, resultsPayload)
+	res, err := resultsFunctions.GetResults(cookies, resultsPayload)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't fetch user results. Please try again",

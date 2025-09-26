@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var statusFunctions = status.NewStatusFunctions()
+
 // @Summary Get the status of KNUST servers
 // @Description This checks which of the used KNUST servers are up or down
 // @Tags KNUST Servers
@@ -16,7 +18,7 @@ import (
 // @Failure 500 {object} models.ErrorResponse
 // @Router /knust-server-status [get]
 func (h *Handlers) KNUSTServerStatusHandler(c *gin.Context) {
-	servers := status.GetKNUSTStatus()
+	servers := statusFunctions.GetKNUSTStatus()
 
 	c.JSON(http.StatusOK, models.KNUSTServerStatusResponse{
 		Message: "Fetched server status successfully",
@@ -31,7 +33,7 @@ func (h *Handlers) KNUSTServerStatusHandler(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /knust-server-status/badge [get]
 func (h *Handlers) KNUSTServerStatusBadgeHandler(c *gin.Context) {
-	badge, err := status.GetStatusBadge()
+	badge, err := statusFunctions.GetStatusBadge()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't fetch badge"})
 	}
