@@ -2,15 +2,10 @@ package handlers
 
 import (
 	"net/http"
-	"os"
-	"time"
 
-	"github.com/Owbird/KNUST-AIM-API/config"
-	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
+	"github.com/Owbird/KNUST-AIM-API/pkg/auth"
 	"github.com/gin-gonic/gin"
-	"github.com/go-rod/rod/lib/proto"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 // @Summary Authenticate a user
@@ -35,104 +30,15 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 		})
 	}
 
-	browser := utils.NewBrowser()
+	token, err := auth.AuthenticateUser(authPayload)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Message: "Couldn't authorize user. Please try again",
+		})
+	}
 
-	page := browser.MustPage()
-
-	defer page.Close()
-
-	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
-		UserAgent: config.UserAgent,
+	c.JSON(http.StatusOK, models.UserResponse{
+		Message: "User authorized successfully",
+		Token:   token,
 	})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Message: "Couldn't authorize user. Please try again",
-		})
-	}
-
-	err = page.Navigate(config.BaseUrl)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Message: "Couldn't authorize user. Please try again",
-		})
-	}
-
-	err = page.WaitLoad()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Message: "Couldn't authorize user. Please try again",
-		})
-	}
-
-	page.MustWaitStable()
-
-	form := page.MustElement("form")
-
-	usernameInput := form.MustElement("input[name='studentUsername']")
-	usernameInput.MustInput(authPayload.Username)
-
-	passwordInput := form.MustElement("input[name='Password']")
-	passwordInput.MustInput(authPayload.Password)
-
-	studentIdInput := form.MustElement("input[name='StudentId']")
-	studentIdInput.MustInput(authPayload.StudentId)
-
-	loginBtn := form.MustElement("button[type='submit']")
-	loginBtn.MustClick()
-
-	page.MustWaitNavigation()
-
-	page.MustWaitLoad()
-
-	cookies, err := page.Cookies([]string{config.BaseUrl})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Message: "Couldn't authorize user. Please try again",
-		})
-	}
-
-	userCookies := models.UserCookies{}
-
-	for _, cookie := range cookies {
-		switch cookie.Name {
-		case ".AspNetCore.Antiforgery.oBcnM5PKSJA":
-			userCookies.Antiforgery = cookie.Value
-		case ".AspNetCore.Session":
-			userCookies.Session = cookie.Value
-		case ".AspNetCore.Identity.Application":
-			userCookies.Identity = cookie.Value
-		}
-	}
-
-	if userCookies.Identity != "" {
-
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256,
-			jwt.MapClaims{
-				"token": userCookies,
-				"exp":   time.Now().Add(time.Hour * 24).Unix(),
-			})
-
-		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-				Message: "Couldn't authorize user. Please try again",
-			})
-
-			return
-		}
-
-		c.JSON(http.StatusOK, models.UserResponse{
-			Message: "User authorized successfully",
-			Token:   tokenString,
-		})
-
-		return
-
-	}
-
-	c.JSON(http.StatusUnauthorized, models.ErrorResponse{
-		Message: "Incorrect credentials. Please try again",
-	})
-
-	return
 }
