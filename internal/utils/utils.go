@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -22,46 +21,25 @@ func NewBrowser() *rod.Browser {
 	return browser
 }
 
-
 func GetCookiesFromJWT(tokenString string) (models.UserCookies, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 	if err != nil {
-		return models.UserCookies{}, fmt.Errorf("failed to parse token: %w", err)
+		return models.UserCookies{}, err
 	}
 
-	if !token.Valid {
-		return models.UserCookies{}, fmt.Errorf("invalid token")
-	}
+	data, ok := token.Claims.(jwt.MapClaims)
 
-	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return models.UserCookies{}, fmt.Errorf("failed to extract claims")
-	}
-
-	tokenData, ok := claims["token"].(map[string]interface{})
-	if !ok {
-		return models.UserCookies{}, fmt.Errorf("token claim not found or invalid format")
+		return models.UserCookies{}, err
 	}
 
 	userCookies := models.UserCookies{}
 
-	if antiforgery, ok := tokenData["Antiforgery"].(string); ok {
-		userCookies.Antiforgery = antiforgery
-	}
-
-	if session, ok := tokenData["Session"].(string); ok {
-		userCookies.Session = session
-	}
-
-	if identity, ok := tokenData["Identity"].(string); ok {
-		userCookies.Identity = identity
-	}
+	userCookies.Antiforgery = data["token"].(map[string]interface{})["antiforgery"].(string)
+	userCookies.Session = data["token"].(map[string]interface{})["session"].(string)
+	userCookies.Identity = data["token"].(map[string]interface{})["identity"].(string)
 
 	return userCookies, nil
 }
-
