@@ -21,7 +21,7 @@ var resultsFunctions = results.NewResultsFunctions()
 func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 	cookies, _ := c.Get("userCookies")
 
-	res, err := resultsFunctions.SelectResult(cookies)
+	res, err := resultsFunctions.SelectResult(cookies.(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get results. Please try again",
@@ -60,7 +60,7 @@ func (h *Handlers) GetResultsHandler(c *gin.Context) {
 		return
 	}
 
-	res, err := resultsFunctions.GetResults(cookies, resultsPayload)
+	res, err := resultsFunctions.GetResults(cookies.(string), resultsPayload)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't fetch user results. Please try again",

@@ -17,8 +17,11 @@ func NewResultsFunctions() *ResultsFunctions {
 	return &ResultsFunctions{}
 }
 
-func (rf *ResultsFunctions) SelectResult(cookies any) (models.ResultsSelection, error) {
-	parsedCookies := cookies.(models.UserCookies)
+func (rf *ResultsFunctions) SelectResult(cookies string) (models.ResultsSelection, error) {
+	parsedCookies, err := utils.GetCookiesFromJWT(cookies)
+	if err != nil {
+		return models.ResultsSelection{}, err
+	}
 
 	browser := utils.NewBrowser()
 
@@ -46,7 +49,7 @@ func (rf *ResultsFunctions) SelectResult(cookies any) (models.ResultsSelection, 
 
 	defer page.Close()
 
-	err := page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
+	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
 	if err != nil {
@@ -91,8 +94,11 @@ func (rf *ResultsFunctions) SelectResult(cookies any) (models.ResultsSelection, 
 	}, nil
 }
 
-func (rf *ResultsFunctions) GetResults(cookies any, payload models.GetResultsPayload) (models.GetResultsResponse, error) {
-	parsedCookies := cookies.(models.UserCookies)
+func (rf *ResultsFunctions) GetResults(cookies string, payload models.GetResultsPayload) (models.GetResultsResponse, error) {
+	parsedCookies, err := utils.GetCookiesFromJWT(cookies)
+	if err != nil {
+		return models.GetResultsResponse{}, err
+	}
 
 	browser := utils.NewBrowser()
 
@@ -120,7 +126,7 @@ func (rf *ResultsFunctions) GetResults(cookies any, payload models.GetResultsPay
 
 	defer page.Close()
 
-	err := page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
+	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
 	if err != nil {

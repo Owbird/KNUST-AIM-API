@@ -18,8 +18,11 @@ func NewUserFunctions() *UserFunctions {
 	return &UserFunctions{}
 }
 
-func (u *UserFunctions) GetUserData(cookies any) (models.UserData, error) {
-	parsedCookies := cookies.(models.UserCookies)
+func (u *UserFunctions) GetUserData(cookies string) (models.UserData, error) {
+	parsedCookies, err := utils.GetCookiesFromJWT(cookies)
+	if err != nil {
+		return models.UserData{}, nil
+	}
 
 	browser := utils.NewBrowser()
 
@@ -47,7 +50,7 @@ func (u *UserFunctions) GetUserData(cookies any) (models.UserData, error) {
 
 	defer page.Close()
 
-	err := page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
+	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
 		UserAgent: config.UserAgent,
 	})
 	if err != nil {

@@ -21,7 +21,7 @@ var userFunctions = user.NewUserFunctions()
 func (h *Handlers) GetUserData(c *gin.Context) {
 	cookies, _ := c.Get("userCookies")
 
-	userData, err := userFunctions.GetUserData(cookies)
+	userData, err := userFunctions.GetUserData(cookies.(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Message: "Couldn't get user data. Please try again",
