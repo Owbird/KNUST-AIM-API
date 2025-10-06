@@ -1,15 +1,12 @@
 package status
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"sync"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
 	"github.com/Owbird/KNUST-AIM-API/models"
-	"github.com/gin-gonic/gin"
 )
 
 type StatusFunctions struct{}
@@ -62,30 +59,11 @@ func (s *StatusFunctions) GetKNUSTStatus() []models.KNUSTServer {
 	return servers
 }
 
-func (sf *StatusFunctions) GetStatusBadge() ([]byte, error) {
-	host := config.HostUrlProd
-
-	if gin.Mode() == "debug" {
-		host = config.HostUrlDev
-	}
-
-	url := fmt.Sprintf("%s/api/v1/knust-server-status", host)
-
-	res, err := http.Get(url)
-	if err != nil {
-		return []byte{}, nil
-	}
-
-	var response models.KNUSTServerStatusResponse
-
-	err = json.NewDecoder(res.Body).Decode(&response)
-	if err != nil {
-		return []byte{}, err
-	}
+func (sf *StatusFunctions) GetStatusBadge() (string, error) {
 
 	badge := "Up-green"
 
-	for _, server := range response.Servers {
+	for _, server := range sf.GetKNUSTStatus() {
 		if server.Status == "Down" {
 			badge = "Down-red"
 			break
@@ -94,15 +72,5 @@ func (sf *StatusFunctions) GetStatusBadge() ([]byte, error) {
 
 	shieldUrl := fmt.Sprintf("https://img.shields.io/badge/KNUST_Servers-%s", badge)
 
-	res, err = http.Get(shieldUrl)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	return body, nil
+	return shieldUrl, nil
 }
