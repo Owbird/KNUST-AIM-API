@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
+	"github.com/Owbird/KNUST-AIM-API/internal/database"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/anaskhan96/soup"
 )
@@ -17,6 +18,21 @@ func NewNewsFunctions() *NewsFunctions {
 
 func (nf *NewsFunctions) GetNews() ([]models.News, error) {
 	soup.Header("User-Agent", config.UserAgent)
+
+	db, err := database.GetInstance()
+	if err != nil {
+		return []models.News{}, err
+	}
+
+	defer db.Close()
+
+	var cachedNews []models.News
+
+	if err = db.ReadCache("news", &cachedNews); err == nil {
+
+		return cachedNews, nil
+
+	}
 
 	res, err := soup.Get(config.NewsEndpoint)
 	if err != nil {
@@ -59,11 +75,29 @@ func (nf *NewsFunctions) GetNews() ([]models.News, error) {
 		})
 	}
 
+	db.SetCache("news", appNews)
+
 	return appNews, nil
 }
 
 func (nf *NewsFunctions) GetNewsDetails(slug string) (models.NewsDetails, error) {
 	soup.Header("User-Agent", config.UserAgent)
+
+	db, err := database.GetInstance()
+	if err != nil {
+		return models.NewsDetails{}, err
+	}
+
+	defer db.Close()
+
+	cacheKey := fmt.Sprintf("news-%v", slug)
+	var cachedDetails models.NewsDetails
+
+	if err = db.ReadCache(cacheKey, &cachedDetails); err == nil {
+
+		return cachedDetails, nil
+
+	}
 
 	newsEndpoint := fmt.Sprintf("%s/news-items/%s", config.NewsEndpoint, slug)
 
@@ -114,12 +148,16 @@ func (nf *NewsFunctions) GetNewsDetails(slug string) (models.NewsDetails, error)
 		}
 	}
 
-	return models.NewsDetails{
+	details := models.NewsDetails{
 		Title:         title.Text(),
 		FeaturedImage: fmt.Sprintf("%s%s", config.MainUrl, featuredImageTag.Attrs()["src"]),
 		Date:          strings.TrimSpace(date),
 		Source:        strings.TrimSpace(source),
 		Content:       content,
 		ReadTime:      totalWords / config.AVGReadSpeed,
-	}, nil
+	}
+
+	db.SetCache(cacheKey, details)
+
+	return details, nil
 }
