@@ -27,7 +27,7 @@ func (h *Handlers) KNUSTServerStatusHandler(c *gin.Context) {
 }
 
 // @Summary Get the status of KNUST servers as a badge
-// @Description This sums up the status of the servers and returns an SVG badge as a summary from shields.io
+// @Description This sums up the status of the servers and returns a url to an SVG badge from shields.io
 // @Tags KNUST Servers
 // @Success 200 {string} string "OK"
 // @Failure 500 {object} models.ErrorResponse
@@ -38,5 +38,5 @@ func (h *Handlers) KNUSTServerStatusBadgeHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Message: "Couldn't fetch badge"})
 	}
 
-	c.Data(http.StatusOK, "image/svg+xml;charset=utf-8", badge)
+	c.String(http.StatusOK, badge)
 }
