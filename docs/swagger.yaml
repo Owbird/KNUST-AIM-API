@@ -62,6 +62,8 @@ definitions:
         type: string
       description:
         type: string
+      featured_image:
+        type: string
       slug:
         type: string
       title:
@@ -77,6 +79,8 @@ definitions:
         type: string
       featured_image:
         type: string
+      read_time:
+        type: integer
       source:
         type: string
       tile:
@@ -158,6 +162,8 @@ definitions:
         type: string
       programme:
         type: string
+      sem:
+        type: string
       studentId:
         type: string
       username:
@@ -203,6 +209,15 @@ definitions:
       semester:
         type: string
     type: object
+  models.UserAuthPayload:
+    properties:
+      password:
+        type: string
+      studentId:
+        type: string
+      username:
+        type: string
+    type: object
   models.UserData:
     properties:
       contact:
@@ -233,27 +248,15 @@ paths:
     post:
       consumes:
       - application/json
-      description: Authenticates the user the based on the credentials and returns
-        a token which will be used to authorize requests as a bearer token
+      description: Authenticates the user based on the credentials and returns a token
+        which will be used to authorize requests as a bearer token
       parameters:
-      - description: Username
+      - description: User authentication credentials
         in: body
-        name: username
+        name: authPayload
         required: true
         schema:
-          type: string
-      - description: Password
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
-      - description: Student ID
-        in: body
-        name: studentId
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/models.UserAuthPayload'
       produces:
       - application/json
       responses:
@@ -291,8 +294,8 @@ paths:
       - KNUST Servers
   /knust-server-status/badge:
     get:
-      description: This sums up the status of the servers and returns an SVG badge
-        as a summary from shields.io
+      description: This sums up the status of the servers and returns a url to an
+        SVG badge from shields.io
       responses:
         "200":
           description: OK

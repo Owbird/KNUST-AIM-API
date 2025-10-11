@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/auth/login": {
             "post": {
-                "description": "Authenticates the user the based on the credentials and returns a token which will be used to authorize requests as a bearer token",
+                "description": "Authenticates the user based on the credentials and returns a token which will be used to authorize requests as a bearer token",
                 "consumes": [
                     "application/json"
                 ],
@@ -30,30 +30,12 @@ const docTemplate = `{
                 "summary": "Authenticate a user",
                 "parameters": [
                     {
-                        "description": "Username",
-                        "name": "username",
+                        "description": "User authentication credentials",
+                        "name": "authPayload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Password",
-                        "name": "password",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Student ID",
-                        "name": "studentId",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.UserAuthPayload"
                         }
                     }
                 ],
@@ -107,7 +89,7 @@ const docTemplate = `{
         },
         "/knust-server-status/badge": {
             "get": {
-                "description": "This sums up the status of the servers and returns an SVG badge as a summary from shields.io",
+                "description": "This sums up the status of the servers and returns a url to an SVG badge from shields.io",
                 "tags": [
                     "KNUST Servers"
                 ],
@@ -463,6 +445,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "featured_image": {
+                    "type": "string"
+                },
                 "slug": {
                     "type": "string"
                 },
@@ -485,6 +470,9 @@ const docTemplate = `{
                 },
                 "featured_image": {
                     "type": "string"
+                },
+                "read_time": {
+                    "type": "integer"
                 },
                 "source": {
                     "type": "string"
@@ -611,6 +599,9 @@ const docTemplate = `{
                 "programme": {
                     "type": "string"
                 },
+                "sem": {
+                    "type": "string"
+                },
                 "studentId": {
                     "type": "string"
                 },
@@ -677,6 +668,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "semester": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserAuthPayload": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
