@@ -148,3 +148,15 @@ func (af *AuthFunctions) RemoveUser(cookies string) error {
 
 	return nil
 }
+
+func (af *AuthFunctions) IsAuthed() bool {
+	db, err := database.GetInstance()
+	if err != nil {
+		return false
+	}
+
+	var authed bool
+	db.ReadCache("authed", &authed)
+
+	return authed
+}
