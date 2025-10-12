@@ -106,7 +106,7 @@ func (rf *ResultsFunctions) SelectResult(cookies string) (models.ResultsSelectio
 		Sems:  sems,
 	}
 
-	db.SetCache("selection", selection, 30)
+	db.SetCache("resultsSelection", selection, 30)
 
 	return selection, nil
 }
