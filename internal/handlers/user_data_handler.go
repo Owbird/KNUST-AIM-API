@@ -18,6 +18,7 @@ var userFunctions = user.NewUserFunctions()
 // @Failure 500 {object} models.ErrorResponse
 // @Failure 401 {object} models.ErrorResponse
 // @Router /user [get]
+// @Security ApiKeyAuth
 func (h *Handlers) GetUserData(c *gin.Context) {
 	cookies, _ := c.Get("userCookies")
 

@@ -18,6 +18,7 @@ var resultsFunctions = results.NewResultsFunctions()
 // @Failure 500 {object} models.ErrorResponse
 // @Failure 401 {object} models.ErrorResponse
 // @Router /user/results/selection [get]
+// @Security ApiKeyAuth
 func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 	cookies, _ := c.Get("userCookies")
 
@@ -46,6 +47,7 @@ func (h *Handlers) ResultSelectionHandler(c *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 401 {object} models.ErrorResponse
 // @Router /user/results [post]
+// @Security ApiKeyAuth
 func (h *Handlers) GetResultsHandler(c *gin.Context) {
 	cookies, _ := c.Get("userCookies")
 

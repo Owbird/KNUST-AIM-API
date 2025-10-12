@@ -176,6 +176,11 @@ const docTemplate = `{
         },
         "/user": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Returns personal, programme and contact user data",
                 "produces": [
                     "application/json"
@@ -255,6 +260,11 @@ const docTemplate = `{
         },
         "/user/results": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Returns results for the selected academic year and semester",
                 "consumes": [
                     "application/json"
@@ -316,6 +326,11 @@ const docTemplate = `{
         },
         "/user/results/selection": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Returns a list of years and semester that the results are available for",
                 "produces": [
                     "application/json"
@@ -721,6 +736,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
