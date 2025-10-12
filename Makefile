@@ -3,7 +3,7 @@
 # Build the application
 all: build
 
-build:
+build: docs
 	@echo "Building..."
 	
 	@go build -o main cmd/api/main.go
@@ -29,7 +29,7 @@ docs:
 	@swag init -g cmd/api/main.go
 
 # Live Reload
-watch:
+dev:
 	@if command -v air > /dev/null; then \
 	    air; \
 	    echo "Watching...";\
