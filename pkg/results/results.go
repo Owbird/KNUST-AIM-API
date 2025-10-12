@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
+	"github.com/Owbird/KNUST-AIM-API/internal/database"
 	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/go-rod/rod"
@@ -18,6 +19,18 @@ func NewResultsFunctions() *ResultsFunctions {
 }
 
 func (rf *ResultsFunctions) SelectResult(cookies string) (models.ResultsSelection, error) {
+	db, err := database.GetInstance()
+	if err != nil {
+		return models.ResultsSelection{}, nil
+	}
+
+	defer db.Close()
+
+	var cachedResultsSelection models.ResultsSelection
+	if err = db.ReadCache("resultsSelection", &cachedResultsSelection); err == nil {
+		return cachedResultsSelection, nil
+	}
+
 	parsedCookies, err := utils.GetCookiesFromJWT(cookies)
 	if err != nil {
 		return models.ResultsSelection{}, err
@@ -88,13 +101,29 @@ func (rf *ResultsFunctions) SelectResult(cookies string) (models.ResultsSelectio
 		}
 	}
 
-	return models.ResultsSelection{
+	selection := models.ResultsSelection{
 		Years: years,
 		Sems:  sems,
-	}, nil
+	}
+
+	db.SetCache("selection", selection, 30)
+
+	return selection, nil
 }
 
 func (rf *ResultsFunctions) GetResults(cookies string, payload models.GetResultsPayload) (models.GetResultsResponse, error) {
+	db, err := database.GetInstance()
+	if err != nil {
+		return models.GetResultsResponse{}, nil
+	}
+
+	defer db.Close()
+
+	var cachedResults models.GetResultsResponse
+	if err = db.ReadCache("results", &cachedResults); err == nil {
+		return cachedResults, nil
+	}
+
 	parsedCookies, err := utils.GetCookiesFromJWT(cookies)
 	if err != nil {
 		return models.GetResultsResponse{}, err
@@ -269,7 +298,7 @@ func (rf *ResultsFunctions) GetResults(cookies string, payload models.GetResults
 		trails = []string{}
 	}
 
-	return models.GetResultsResponse{
+	resultsResponse := models.GetResultsResponse{
 		Message: "Fetched results successfully",
 		PersonalData: models.ResultsPersonalData{
 			Name:      name,
@@ -306,5 +335,9 @@ func (rf *ResultsFunctions) GetResults(cookies string, payload models.GetResults
 			},
 		},
 		Trails: trails,
-	}, nil
+	}
+
+	db.SetCache("results", resultsResponse, 0)
+
+	return resultsResponse, nil
 }

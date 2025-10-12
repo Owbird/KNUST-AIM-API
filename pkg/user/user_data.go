@@ -2,11 +2,10 @@ package user
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"strings"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
+	"github.com/Owbird/KNUST-AIM-API/internal/database"
 	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/go-rod/rod/lib/proto"
@@ -19,6 +18,18 @@ func NewUserFunctions() *UserFunctions {
 }
 
 func (u *UserFunctions) GetUserData(cookies string) (models.UserData, error) {
+	db, err := database.GetInstance()
+	if err != nil {
+		return models.UserData{}, nil
+	}
+
+	defer db.Close()
+
+	var cachedUserData models.UserData
+	if err = db.ReadCache("userData", &cachedUserData); err == nil {
+		return cachedUserData, nil
+	}
+
 	parsedCookies, err := utils.GetCookiesFromJWT(cookies)
 	if err != nil {
 		return models.UserData{}, nil
@@ -131,18 +142,7 @@ func (u *UserFunctions) GetUserData(cookies string) (models.UserData, error) {
 		},
 	}
 
+	db.SetCache("userData", userData, 30)
+
 	return userData, nil
-}
-
-func (u *UserFunctions) GetUserImage(id string) ([]byte, error) {
-	url := fmt.Sprintf("%s?id=%s", config.UserImageUrl, id)
-
-	resp, err := http.Get(url)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	return body, nil
 }

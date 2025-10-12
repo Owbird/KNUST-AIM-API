@@ -81,8 +81,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 			user := apiV1.Group("/user")
 			{
-				user.GET("/image/:id", handlers.GetUserImage)
-
 				user.Use(middlewares.AuthMiddleware)
 				user.GET("/", handlers.GetUserData)
 				user.POST("/results", handlers.GetResultsHandler)

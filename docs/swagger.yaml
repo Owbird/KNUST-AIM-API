@@ -373,37 +373,6 @@ paths:
       summary: Get User Data
       tags:
       - User
-  /user/image/{studentId}:
-    get:
-      description: Serves up the user image based on the student id
-      parameters:
-      - description: Student ID
-        in: path
-        name: studentId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: User image
-      tags:
-      - User
   /user/results:
     post:
       consumes:

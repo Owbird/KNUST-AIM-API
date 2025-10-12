@@ -34,36 +34,3 @@ func (h *Handlers) GetUserData(c *gin.Context) {
 		UserData: userData,
 	})
 }
-
-// @Summary User image
-// @Description Serves up the user image based on the student id
-// @Tags User
-// @Produce json
-// @Param  studentId path string true "Student ID"
-// @Success 200 {string} string "OK"
-// @Failure 500 {object} models.ErrorResponse
-// @Failure 401 {object} models.ErrorResponse
-// @Failure 400 {object} models.ErrorResponse
-// @Router /user/image/{studentId} [get]
-func (h *Handlers) GetUserImage(c *gin.Context) {
-	id, ok := c.Params.Get("id")
-
-	if !ok {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Message: "Invalid user id",
-		})
-
-		return
-	}
-
-	imageBytes, err := userFunctions.GetUserImage(id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Message: "Couldn't fetch user image",
-		})
-
-		return
-	}
-
-	c.Data(http.StatusOK, "image/jpg", imageBytes)
-}
