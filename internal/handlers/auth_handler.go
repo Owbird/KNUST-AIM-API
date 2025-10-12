@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/Owbird/KNUST-AIM-API/pkg/auth"
 	"github.com/gin-gonic/gin"
@@ -39,5 +40,29 @@ func (h *Handlers) AuthHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, models.UserResponse{
 		Message: "User authorized successfully",
 		Token:   token,
+	})
+}
+
+// @Summary Authenticate a user
+// @Description Authenticates the user based on the credentials and returns a token which will be used to authorize requests as a bearer token
+// @Tags Auth
+// @Produce json
+// @Success 200 {object} models.RemoveUserResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Router /auth/login [post]
+func (h *Handlers) LogoutHandler(c *gin.Context) {
+	cookies, _ := c.Get("userCookies")
+
+	err := authFunctions.RemoveUser(cookies.(string))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, models.ErrorResponse{
+			Message: "Couldn't remove user. Please try again",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.RemoveUserResponse{
+		Message: "User removed successfully",
 	})
 }

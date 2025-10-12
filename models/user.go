@@ -17,6 +17,10 @@ type UserResponse struct {
 	Token   string `json:"token"`
 }
 
+type RemoveUserResponse struct {
+	Message string `json:"message"`
+}
+
 type PersonalUserData struct {
 	Username    string `json:"username"`
 	Surname     string `json:"surname"`

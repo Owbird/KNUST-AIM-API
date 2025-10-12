@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
+	"github.com/Owbird/KNUST-AIM-API/internal/database"
 	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
 	"github.com/Owbird/KNUST-AIM-API/pkg/results"
@@ -121,9 +122,29 @@ func (af *AuthFunctions) AuthenticateUser(payload models.UserAuthPayload) (strin
 		}()
 
 		wg.Wait()
+
+		db, err := database.GetInstance()
+		if err != nil {
+			log.Println(err)
+			return "", err
+		}
+
+		db.SetCache("authed", true, 0)
+
 		return tokenString, nil
 
 	}
 
 	return "", fmt.Errorf("could not authenticate user")
+}
+
+func (af *AuthFunctions) RemoveUser(cookies string) error {
+	db, err := database.GetInstance()
+	if err != nil {
+		return err
+	}
+
+	db.SetCache("authed", false, 0)
+
+	return nil
 }
