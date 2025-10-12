@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
 	"github.com/Owbird/KNUST-AIM-API/internal/utils"
 	"github.com/Owbird/KNUST-AIM-API/models"
+	"github.com/Owbird/KNUST-AIM-API/pkg/results"
+	"github.com/Owbird/KNUST-AIM-API/pkg/user"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -100,6 +103,24 @@ func (af *AuthFunctions) AuthenticateUser(payload models.UserAuthPayload) (strin
 			return "", err
 		}
 
+		wg := sync.WaitGroup{}
+
+		uf := user.NewUserFunctions()
+		rf := results.NewResultsFunctions()
+
+		wg.Add(2)
+
+		go func() {
+			defer wg.Done()
+			uf.GetUserData(tokenString)
+		}()
+
+		go func() {
+			defer wg.Done()
+			rf.SelectResult(tokenString)
+		}()
+
+		wg.Wait()
 		return tokenString, nil
 
 	}
