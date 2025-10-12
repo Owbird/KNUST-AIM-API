@@ -2,6 +2,7 @@ package news
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/Owbird/KNUST-AIM-API/config"
@@ -29,13 +30,12 @@ func (nf *NewsFunctions) GetNews() ([]models.News, error) {
 	var cachedNews []models.News
 
 	if err = db.ReadCache("news", &cachedNews); err == nil {
-
 		return cachedNews, nil
-
 	}
 
 	res, err := soup.Get(config.NewsEndpoint)
 	if err != nil {
+		log.Println(err)
 		return []models.News{}, err
 	}
 
@@ -75,7 +75,7 @@ func (nf *NewsFunctions) GetNews() ([]models.News, error) {
 		})
 	}
 
-	db.SetCache("news", appNews)
+	db.SetCache("news", appNews, 1)
 
 	return appNews, nil
 }
@@ -94,9 +94,7 @@ func (nf *NewsFunctions) GetNewsDetails(slug string) (models.NewsDetails, error)
 	var cachedDetails models.NewsDetails
 
 	if err = db.ReadCache(cacheKey, &cachedDetails); err == nil {
-
 		return cachedDetails, nil
-
 	}
 
 	newsEndpoint := fmt.Sprintf("%s/news-items/%s", config.NewsEndpoint, slug)
@@ -157,7 +155,7 @@ func (nf *NewsFunctions) GetNewsDetails(slug string) (models.NewsDetails, error)
 		ReadTime:      totalWords / config.AVGReadSpeed,
 	}
 
-	db.SetCache(cacheKey, details)
+	db.SetCache(cacheKey, details, 0)
 
 	return details, nil
 }
