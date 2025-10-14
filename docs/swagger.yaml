@@ -137,6 +137,11 @@ definitions:
       studentId:
         type: string
     type: object
+  models.RemoveUserResponse:
+    properties:
+      message:
+        type: string
+    type: object
   models.Results:
     properties:
       course_code:
@@ -273,6 +278,27 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Authenticate a user
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      description: Removes the user from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RemoveUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Logout a user
       tags:
       - Auth
   /knust-server-status:

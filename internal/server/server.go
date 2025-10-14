@@ -71,6 +71,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 			auth := apiV1.Group("/auth")
 			{
 				auth.POST("/login", handlers.AuthHandler)
+				auth.POST("/logout", handlers.LogoutHandler)
 			}
 
 			news := apiV1.Group("/news")

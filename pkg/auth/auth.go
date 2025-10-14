@@ -138,7 +138,7 @@ func (af *AuthFunctions) AuthenticateUser(payload models.UserAuthPayload) (strin
 	return "", fmt.Errorf("could not authenticate user")
 }
 
-func (af *AuthFunctions) RemoveUser(cookies string) error {
+func (af *AuthFunctions) RemoveUser() error {
 	db, err := database.GetInstance()
 	if err != nil {
 		return err
