@@ -66,9 +66,8 @@ func (af *AuthFunctions) AuthenticateUser(payload models.UserAuthPayload) (strin
 	loginBtn := form.MustElement("button[type='submit']")
 	loginBtn.MustClick()
 
-	page.MustWaitNavigation()
-
-	page.MustWaitLoad()
+	wait := page.MustWaitNavigation()
+	wait()
 
 	cookies, err := page.Cookies([]string{config.BaseUrl})
 	if err != nil {
