@@ -12,11 +12,20 @@ import (
 
 // Spins up a new browser with no sandbox for linux systems
 func NewBrowser() *rod.Browser {
-	controlUrl := launcher.New().NoSandbox(true).MustLaunch()
+	chromePath, _ := launcher.LookPath()
 
-	browser := rod.New().ControlURL(controlUrl).MustConnect().WithPanic(func(i interface{}) {
-		log.Println("[!] Headerless browser proberly lost context.")
-	})
+	controlURL := launcher.New().
+		Bin(chromePath).
+		NoSandbox(true).
+		Leakless(false).
+		MustLaunch()
+
+	browser := rod.New().
+		ControlURL(controlURL).
+		MustConnect().
+		WithPanic(func(i interface{}) {
+			log.Println("[!] Headless browser probably lost context:", i)
+		})
 
 	return browser
 }
