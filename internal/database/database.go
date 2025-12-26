@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 type Database struct {
@@ -23,8 +23,7 @@ func GetInstance() (*Database, error) {
 	}
 
 	dbPath := filepath.Join(userHome, "kaimd.db")
-
-	instance, err := sql.Open("sqlite3", dbPath)
+	instance, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		return nil, err
 	}
