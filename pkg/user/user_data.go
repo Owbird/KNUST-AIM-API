@@ -86,7 +86,7 @@ func (u *UserFunctions) GetUserData(cookies string) (models.UserData, error) {
 
 	surname := *page.MustElement("input[name='StduentDTO.Surname']").MustAttribute("value")
 	otherNames := *page.MustElement("input[name='StduentDTO.OtherName']").MustAttribute("value")
-	studentId := *page.MustElement("input[name='StduentDTO.StudentId']").MustAttribute("value")
+	studentId, _ := page.MustElements("span[style='font-weight:600;']")[0].Text()
 
 	indexNo, _ := page.MustElements("span[style='font-weight:600;']")[1].Text()
 
